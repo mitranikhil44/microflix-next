@@ -1,14 +1,13 @@
 import MoviesCollection from "../components/Movie_Collection";
 
 export default function Home(props) {
-  const { hollywoodData, hollywoodAdultData, bollywoodData, bollywoodAdultData } = props;
   console.log();
   return (
     <main>
-      <MoviesCollection data={hollywoodData.data} collectionName={"Other Country Content"} linkPath="/data/other_country_content" />
-      <MoviesCollection data={hollywoodAdultData.data} collectionName={"Other Country 18+ Content"} linkPath="/data/other_country_18+_content" />
-      <MoviesCollection data={bollywoodData.data} collectionName={"Indian Content"} linkPath="/data/indian_content" />
-      <MoviesCollection data={bollywoodAdultData.data} collectionName={"Indian 18+ Content"} linkPath="/data/indian_18+_content" />
+      <MoviesCollection data={props.hollywoodData.data} collectionName={"Other Country Content"} linkPath="/data/other_country_content" />
+      <MoviesCollection data={props.hollywoodAdultData.data} collectionName={"Other Country 18+ Content"} linkPath="/data/other_country_18+_content" />
+      <MoviesCollection data={props.bollywoodData.data} collectionName={"Indian Content"} linkPath="/data/indian_content" />
+      <MoviesCollection data={props.bollywoodAdultData.data} collectionName={"Indian 18+ Content"} linkPath="/data/indian_18+_content" />
     </main>
   );
 }
