@@ -5,7 +5,7 @@ import Logo from '../public/microflix_logo.png';
 const Navbar = () => {
   return (
     <div className="px-5 py-2 flex justify-between items-center sticky top-0 z-50">
-      <Link href="/" className="flex items-center">
+      <Link href="/home" className="flex items-center">
         <div className="h-10 w-10">
           <Image src={Logo} alt="Logo" />
         </div>

@@ -14,7 +14,7 @@ export default function Home(props) {
 }
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/"
+  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
   try {
     const fetchData = async (category, skip, limit) => {
       // Use the apiKey variable here
