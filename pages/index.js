@@ -2,7 +2,7 @@ import MoviesCollection from "../components/Movie_Collection";
 
 export default function Home(props) {
   const { hollywoodData, hollywoodAdultData, bollywoodData, bollywoodAdultData } = props;
-  
+  console.log();
   return (
     <main>
       <MoviesCollection data={hollywoodData.data} collectionName={"Other Country Content"} linkPath="/data/other_country_content" />
@@ -16,18 +16,17 @@ export default function Home(props) {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
   try {
-    const fetchData = async (category, skip, limit) => {
+    const skip = 0;
+    const limit = 12;
       // Use the apiKey variable here
-      const response = await fetch(`${apiKey}api/blogs/?category=${category}&skip=${skip}&limit=${limit}`);
-      return await response.json();
-    };
-
-    const [hollywoodData, hollywoodAdultData, bollywoodData, bollywoodAdultData] = await Promise.all([
-      await fetchData("hollywood", 0, 24),
-      await fetchData("hollywood/adult", 0, 24),
-      await fetchData("bollywood", 0, 24),
-      await fetchData("bollywood/adult", 0, 24),
-    ]);
+      const hResponse = await fetch(`${apiKey}api/blogs/?category=hollywood&skip=${skip}&limit=${limit}`);
+      const bResponse = await fetch(`${apiKey}api/blogs/?category=bollywood&skip=${skip}&limit=${limit}`);
+      const hAdultResponse = await fetch(`${apiKey}api/blogs/?category=hollywood/adult&skip=${skip}&limit=${limit}`);
+      const bAdultResponse = await fetch(`${apiKey}api/blogs/?category=bollywood/adult&skip=${skip}&limit=${limit}`);
+      const hollywoodData = await hResponse.json();
+      const bollywoodData = await bResponse.json();
+      const hollywoodAdultData = await hAdultResponse.json();
+      const bollywoodAdultData = await bAdultResponse.json();
 
     return {
       props: { hollywoodData, bollywoodData, hollywoodAdultData, bollywoodAdultData },
