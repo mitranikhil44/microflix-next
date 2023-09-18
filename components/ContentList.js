@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const ContentList = ({ category, initialContents }) => {  
-  const apiKey = process.env.API_KEY || "http://localhost:3000/"
+  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
   const [contents, setContents] = useState(initialContents || []);
   const [skip, setSkip] = useState(0);
   const [limit] = useState(12);

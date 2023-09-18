@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Image from 'next/image';
 
 const Search_Result = () => {
   const router = useRouter();
   const { data, searchResult } = router.query;
 
   const parsedSearchResult = searchResult ? JSON.parse(searchResult) : { suggestions: [] };
-
   return (
     <>
       <h1><strong>Movie Results for: </strong>{data}</h1>

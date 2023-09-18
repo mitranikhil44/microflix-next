@@ -1,8 +1,6 @@
 import MoviesCollection from "../components/Movie_Collection";
-import Image from 'next/image';
 
 export default function Home(props) {
-  // Access the API_KEY environment variable
   const { hollywoodData, hollywoodAdultData, bollywoodData, bollywoodAdultData } = props;
   
   return (
@@ -16,7 +14,7 @@ export default function Home(props) {
 }
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY;
+  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/"
   try {
     const fetchData = async (category, skip, limit) => {
       // Use the apiKey variable here

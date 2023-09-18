@@ -25,7 +25,7 @@ const search = () => {
   };
 
   const fetchSuggestions = async (query) => {
-    const apiKey = process.env.API_KEY || "https://microflix_next_app.vercel.app/";
+    const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
     try {
       const response = await fetch(`${apiKey}api/search_result/?query=${query}`);
       const data = await response.json();
@@ -45,7 +45,7 @@ const search = () => {
   const submit = async (e) => {
     const pushData = async () => {
       await router.push({
-        pathname: '/search',
+        pathname: '/search_result',
         query: {
           data: searchTerm,
           searchResult: JSON.stringify(searchResult),

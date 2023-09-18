@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-import Image from 'next/image';
 import Link from "next/link";
 
 const Movies_Collection = (props) => {

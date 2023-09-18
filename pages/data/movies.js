@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Image from 'next/image';
 import ContentList from '../../components/ContentList';
 
 const Movies = ({ otherMovies, indianMovies }) => {
