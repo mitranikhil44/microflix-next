@@ -8,7 +8,9 @@ export const metadata = {
   description: 'A blog for a coder by a coder',
   scriptTag:
     '<script async="async" data-cfasync="false" src="//revelationschemes.com/8a8462267705e39989e95218ff6f6dae/invoke.js"></script>',
+  metaTag: '<meta name="google-site-verification" content="HzCShkhNsHqze7KztqMUe4veQUNUHyTrDV6_7_2iWwM" />'
 };
+
 
 function MyApp({ Component, pageProps }) {
   const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
