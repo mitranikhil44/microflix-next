@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Image from "next/image";
 
 const ContentList = ({ category, initialContents }) => {  
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
+  const apiKey = process.env.API_KEY || "http://localhost:3000/";
   const [contents, setContents] = useState(initialContents || []);
   const [skip, setSkip] = useState(0);
   const [limit] = useState(12);
@@ -47,11 +48,11 @@ const ContentList = ({ category, initialContents }) => {
           {contents && contents.map((element) => (
             <Link key={element.slug} href={`/content/${element.slug}`}>
               <div className="to-black relative overflow-hidden rounded-lg shadow-lg hover:scale-105 cursor-pointer transition-transform duration-300 ease-in-out h-[100%]">
-                <div className="w-full overflow-hidden flex items-center justify-center">
-                  <img
+                <div className="overflow-hidden flex items-center justify-center">
+                  <Image width="auto" height="auto"
                     src={element.image}
                     alt="Image"
-                    className="object-cover w-full"
+                    className="object-cover"
                   />
                 </div>
                 <div className="text-center mt-2">

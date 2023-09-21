@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from "next/image";
 
 export default function BlogPost(props) {
   const [evenImages, setEvenImages] = useState([]);
@@ -37,7 +38,7 @@ export default function BlogPost(props) {
   return (
     <div className="flex flex-col justify-center items-center py-6 px-4">
       <div className="cropped-image">
-        <img src={props.myBlog.image} alt="Image" className="p-3 border-2 border-gray-300 rounded-lg shadow-md mb-4" />
+        <Image src={props.myBlog.image} alt="Image" width="140" height="140" className="p-3 border-2 border-gray-300 rounded-lg shadow-md mb-4" />
       </div>
       <h4 className="text-lg font-semibold my-4 text-center text-white">{props.myBlog.title}</h4>
       <hr />
