@@ -1,5 +1,4 @@
-import axios from 'axios';
-import cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
 import connectToDatabase from './database/db';
 import { Contents } from './database/models';
 
@@ -8,29 +7,39 @@ const TOTAL_PAGES = 788;
 
 (async () => {
   await connectToDatabase();
+  const browser = await puppeteer.launch();
 
-  async function processArticle(article, Model) {
+  async function processArticle(article, Model, page) {
     const { url } = article;
 
     try {
-      const contentResponse = await axios.get(url);
-      const responseContent$ = cheerio.load(contentResponse.data);
-      const content = responseContent$('main.page-body').html();
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
 
-      if (!content) {
+      const contentElement = await page.$('main.page-body');
+
+      if (!contentElement) {
         console.error('Error: Content is empty for URL:', url);
         return;
       }
 
-      const existingArticle = await Model.findOne({ slug: article.slug });
+      const content = await page.evaluate((element) => element.innerHTML, contentElement);
 
-      const transformedContent = content.replace(/HDHub4u/gi, 'Microflix').replace(/<img>/gi, '<Image>');
+      const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase(); // Generate the slug as a string
+
+      let existingArticle;
+      let slugToUse = slug;
+
+      existingArticle = await Model.findOne({ slug: slugToUse });
+
+      const transformedContent = content
+        .replace(/HDHub4u/gi, 'Microflix')
+        .replace(/<img>/gi, '<Image>');
 
       if (existingArticle) {
         await Model.findOneAndUpdate({ url }, {
           title: article.title,
           image: article.image,
-          slug: article.slug,
+          slug: slugToUse,
           content: transformedContent,
         });
       } else {
@@ -38,7 +47,7 @@ const TOTAL_PAGES = 788;
           title: article.title,
           url,
           image: article.image,
-          slug: article.slug,
+          slug: slugToUse,
           content: transformedContent,
         });
         await newArticle.save();
@@ -53,32 +62,36 @@ const TOTAL_PAGES = 788;
     console.log(`Scraping page no. ${pageNumber}`);
 
     try {
-      const response = await axios.get(url);
-      const $ = cheerio.load(response.data);
+      const page = await browser.newPage();
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
 
-      const articlePromises = $('section.home-wrapper ul li').map(async (index, element) => {
-        const titleElement = $(element).find('p');
-        const title = titleElement ? titleElement.text().trim() : '';
-        const articleUrl = $(element).find('a').attr('href');
-        const imageElement = $(element).find('img[src]');
-        const image = imageElement.length > 0 ? imageElement.attr('src') : '';
-        const slug = title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
+      const articleElements = await page.$$('section.home-wrapper ul li');
 
-        return { title, url: articleUrl, image, slug };
-      }).get();
+      const articles = [];
 
-      return Promise.all(articlePromises);
+      for (const element of articleElements) {
+        const titleElement = await element.$('p');
+        const title = titleElement ? await page.evaluate((el) => el.textContent, titleElement) : '';
+        const articleUrlElement = await element.$('a');
+        const articleUrl = articleUrlElement ? await page.evaluate((a) => a.href, articleUrlElement) : '';
+        const imageElement = await element.$('img[src]');
+        const image = imageElement ? await page.evaluate((img) => img.src, imageElement) : '';
+
+        articles.push({ title, url: articleUrl, image });
+      }
+
+      for (const article of articles) {
+        await processArticle(article, Contents, page);
+      }
+
+      await page.close();
     } catch (error) {
       console.error(`Error scraping page ${pageNumber}:`, error.message);
-      return [];
     }
   }
 
   async function processPage(pageNumber) {
-    const articles = await scrapePage(pageNumber);
-    for (const article of articles) {
-      await processArticle(article, Contents);
-    }
+    await scrapePage(pageNumber);
 
     // Continue to the next page if there are more pages
     if (pageNumber < TOTAL_PAGES) {
@@ -87,12 +100,12 @@ const TOTAL_PAGES = 788;
   }
 
   try {
-    // Start scraping from the first page
     await processPage(1);
-
     console.log('Scraping and processing completed.');
   } catch (error) {
     console.error('Error:', error.message);
     console.log('Error occurred during scraping.');
+  } finally {
+    await browser.close();
   }
 })();
