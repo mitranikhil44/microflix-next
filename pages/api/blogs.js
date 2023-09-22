@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import connectToDatabase from './database/db';
-import { Hollywood, Bollywood } from './database/scrapeSchema';
+import { Contents } from './database/scrapeSchema';
 
 export default async function handler(req, res) {
   await connectToDatabase(); // Establish the database connection
 
   const skip = parseInt(req.query.skip);
   const limit = parseInt(req.query.limit);
-  const category = req.query.category;
+  const category = req.query.category || 'hollywood'; // Default category is 'hollywood'
 
   try {
     const validCategories = [
@@ -15,31 +15,35 @@ export default async function handler(req, res) {
       'hollywood/movies',
       'hollywood/seasons',
       'hollywood/adult',
-      "bollywood",
-      'bollywood/movies',
-      'bollywood/seasons',
-      'bollywood/adult',
     ];
-
+  
     if (!validCategories.includes(category)) {
       res.status(400).json({ error: 'Invalid category' });
       return;
     }
-
-    const [apiCategory, contentCategory] = category.split('/');
-
+  
     let filterConditions = {};
-
-    if (contentCategory === 'movies' || contentCategory === 'seasons') {
-      filterConditions.title = contentCategory === 'movies' ? { $not: /season/i } : /season/i;
-    } else if (contentCategory === 'adult') {
-      filterConditions.title = /18\+/i;
-    } 
-
-    const Model = apiCategory === 'hollywood' ? Hollywood : Bollywood;
-
-    const query = Model.find(filterConditions).skip(skip).limit(limit);
-
+  
+    if (category === 'hollywood/movies') {
+      filterConditions.title = { $not: /season/i };
+    } else if (category === 'hollywood/seasons') {
+      filterConditions.title = { $regex: /season/i, $options: 'i' };
+    } else if (category === 'hollywood/adult') {
+      filterConditions.title = { $regex: /18\+/i, $options: 'i' };
+    }
+  
+    let Model;
+    if (category === 'hollywood') {
+      Model = Contents;
+    }
+  
+    const query = Model ? Model.find(filterConditions).skip(skip).limit(limit) : null;
+  
+    if (!query) {
+      res.status(400).json({ error: 'Invalid category' });
+      return;
+    }
+  
     const filteredData = await query.exec();
 
     const response = {

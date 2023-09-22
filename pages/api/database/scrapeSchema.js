@@ -8,6 +8,4 @@ const scrapeSchema = new mongoose.Schema({
     content: String,
 });
 
-export const Hollywood = mongoose.models.Hollywood || mongoose.model("Hollywood", scrapeSchema);
-export const Bollywood = mongoose.models.Bollywood || mongoose.model("Bollywood", scrapeSchema);
-export const Adult = mongoose.models.Adult || mongoose.model("Adult", scrapeSchema);
+export const Contents =  mongoose.models.Contents || mongoose.model('Contents', scrapeSchema);
