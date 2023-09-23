@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function BlogPost(props) {
   function createMarkup(content) {
     return { __html: content };
