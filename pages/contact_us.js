@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function Contact() {
-  const apiKey = process.env.API_KEY || "http://localhost:3000/";
+  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
