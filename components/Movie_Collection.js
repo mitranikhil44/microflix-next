@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import LoadingSpinner from "./Loading";
 
 const MoviesCollection = (props) => {
   const scrollContainerRef = useRef(null);
-
+  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
   useEffect(() => {
     let scrollInterval;
 
@@ -35,9 +36,18 @@ const MoviesCollection = (props) => {
     return () => clearInterval(scrollInterval);
   }, []);
 
+  const showLoading = async() =>{
+        // Simulate data loading
+        setIsLoading(true)
+        setTimeout(() => {
+          setIsLoading(false); // Set isLoading to false when data is available
+        }, 5000); // Simulating a 2-second delay
+  }
+
   return (
     <div>
-      <Link href={props.linkPath}>
+      {isLoading && <LoadingSpinner />}
+      <Link href={props.linkPath} onClick={showLoading}>
         <div className="flex justify-between items-center m-2">
           <h3 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl m-2">
             {props.collectionName}
@@ -67,7 +77,7 @@ const MoviesCollection = (props) => {
         <div className="flex">
           {props.data &&
             props.data.map((element) => (
-              <Link key={element.slug} href={`/content/${element.slug}`} className="w-36">
+              <Link key={element.slug} href={`/content/${element.slug}`} className="w-36" onClick={showLoading}>
                 <div className="hover:scale-110 m-2 overflow-hidden">
                   <div>
                     <Image width="140" height="140" src={element.image} alt="Image" className="rounded-lg" />

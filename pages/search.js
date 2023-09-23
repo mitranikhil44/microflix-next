@@ -1,6 +1,7 @@
 import Modal from '../components/Modal';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
+import LoadingSpinner from '../components/Loading';
 
 const search = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -8,17 +9,30 @@ const search = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
   const router = useRouter();
   const openModal = () => {
     setIsModalOpen(true);
   };
-  
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  
+
+  const showLoading = async () => {
+    // Simulate data loading
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false); // Set isLoading to false when data is available
+    }, 4000); // Simulating a 2-second delay
+  }
+
   const handleInputChange = async (e) => {
     const newSearchTerm = e.target.value;
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false); // Set isLoading to false when data is available
+    }, 500); // Simulating a 2-second delay
     await setSearchTerm(newSearchTerm);
     await setSelectedSuggestion('');
     fetchSuggestions(newSearchTerm);
@@ -44,6 +58,7 @@ const search = () => {
 
   const submit = async (e) => {
     const pushData = async () => {
+      showLoading()
       await router.push({
         pathname: '/search_result',
         query: {
@@ -67,6 +82,7 @@ const search = () => {
     setSearchTerm(suggestion);
     closeModal();
     submit();
+    showLoading();
   };
 
   useEffect(() => {
@@ -76,9 +92,10 @@ const search = () => {
       closeModal();
     }
   }, [suggestions, searchTerm]);
-  
+
   return (
     <>
+      {isLoading && <LoadingSpinner />}
       <form onSubmit={submit} className="ml-auto mb-2">
         <div className="relative max-w-md">
           <div className="bg-transparent absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

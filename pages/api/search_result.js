@@ -1,12 +1,13 @@
 import connectToDatabase from './database/db';
-import { Hollywood, Bollywood } from './database/scrapeSchema';
+import { Contents } from './database/scrapeSchema';
+
 
 export default async function handler(req, res) {
   try {
     await connectToDatabase();
 
     const query = req.query.query || '';
-    const suggestions = await (Hollywood || Bollywood).find({
+    const suggestions = await Contents.find({
       title: { $regex: new RegExp(query, 'i') },
     });
 

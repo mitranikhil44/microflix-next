@@ -27,16 +27,12 @@ export default async function handler(req, res) {
     if (category === 'hollywood/movies') {
       filterConditions.title = { $not: /season/i };
     } else if (category === 'hollywood/seasons') {
-      filterConditions.title = { $regex: /season/i, $options: 'i' };
+      filterConditions.title = { $regex: /season/i };
     } else if (category === 'hollywood/adult') {
-      filterConditions.title = { $regex: /18\+/i, $options: 'i' };
+      filterConditions.title = { $regex: /18\+/i };
     }
   
-    let Model;
-    if (category === 'hollywood') {
-      Model = Contents;
-    }
-  
+    let Model = Contents;
     const query = Model ? Model.find(filterConditions).skip(skip).limit(limit) : null;
   
     if (!query) {
