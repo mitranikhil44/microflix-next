@@ -13,6 +13,7 @@ const search = () => {
   const router = useRouter();
   const openModal = () => {
     setIsModalOpen(true);
+    setIsLoading(false);
   };
 
   const closeModal = () => {
@@ -30,9 +31,6 @@ const search = () => {
   const handleInputChange = async (e) => {
     const newSearchTerm = e.target.value;
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false); // Set isLoading to false when data is available
-    }, 500); // Simulating a 2-second delay
     await setSearchTerm(newSearchTerm);
     await setSelectedSuggestion('');
     fetchSuggestions(newSearchTerm);
