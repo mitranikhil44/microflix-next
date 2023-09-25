@@ -1,51 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import LoadingSpinner from "./Loading";
 import Image from "next/image";
 import Link from "next/link";
-import LoadingSpinner from "./Loading";
 
 const MoviesCollection = (props) => {
-  const scrollContainerRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false); // Add isLoading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const itemWidth = 140; // Assuming each item width is 140px
+  const containerRef = useRef(null);
+  const dataLength = props.data.length;
+
   useEffect(() => {
-    let scrollInterval;
+    if (dataLength > 0) {
+      const scrollInterval = setInterval(() => {
+        setScrollPosition((prevPosition) => {
+          const newPosition = prevPosition + itemWidth;
+          if (newPosition > dataLength * itemWidth) {
+            return 0;
+          }
+          return newPosition;
+        });
+      }, 3000);
 
-    const startScrolling = () => {
-      const container = scrollContainerRef.current;
+      return () => clearInterval(scrollInterval);
+    }
+  }, [dataLength]);
 
-      if (container) {
-        const scrollWidth = container.scrollWidth;
-        const containerWidth = container.clientWidth;
-
-        if (scrollWidth > containerWidth) {
-          let scrollPosition = 0;
-
-          scrollInterval = setInterval(() => {
-            container.scrollLeft = scrollPosition;
-            scrollPosition++;
-
-            if (scrollPosition >= scrollWidth - containerWidth) {
-              scrollPosition = 0;
-            }
-          }, 10);
-        }
-      }
-    };
-
-    startScrolling();
-
-    return () => clearInterval(scrollInterval);
-  }, []);
-
-  const showLoading = async() =>{
-        // Simulate data loading
-        setIsLoading(true)
-        setTimeout(() => {
-          setIsLoading(false); // Set isLoading to false when data is available
-        }, 5000); // Simulating a 2-second delay
-  }
+  const showLoading = async () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+  };
 
   return (
-    <div>
+    <div className="overflow-hidden h-80 relative">
       {isLoading && <LoadingSpinner />}
       <Link href={props.linkPath} onClick={showLoading}>
         <div className="flex justify-between items-center m-2">
@@ -69,26 +58,25 @@ const MoviesCollection = (props) => {
           </div>
         </div>
       </Link>
-      <hr className="p-3" />
+      <hr className="p-[1%]" />
       <div
-        ref={scrollContainerRef}
-        className="flex items-center overflow-x-auto overflow-y-hidden scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
+        ref={containerRef}
+        className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
+        style={{
+          width: `${dataLength * itemWidth * 4}px`,
+          left: `-${scrollPosition}px`,
+          transition: "left 1s linear",
+        }}
       >
-        <div className="flex">
-          {props.data &&
-            props.data.map((element) => (
-              <Link key={element.slug} href={`/content/${element.slug}`} className="w-36" onClick={showLoading}>
-                <div className="hover:scale-110 m-2 overflow-hidden">
-                  <div>
-                    <Image width="140" height="140" src={element.image} alt="Image" className="rounded-lg" />
-                  </div>
-                  <div className="text-center text-sm lg:text-base xl:text-lg py-3">
-                    <h4>{element.title}</h4>
-                  </div>
-                </div>
-              </Link>
-            ))}
-        </div>
+        {props.data.map((element, index) => (
+          <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading}>
+            <div className="m-[2%] overflow-hidden">
+              <div>
+                <Image width="150" height="150" src={element.image} alt="Image" className="hover:scale-110 overflow-hidden rounded-lg" />
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

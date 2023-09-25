@@ -5,7 +5,7 @@ import Image from "next/image";
 import LoadingSpinner from "./Loading";
 
 const ContentList = ({ category, initialContents }) => {
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
+  const apiKey = process.env.API_KEY || "http://localhost:3000/";
   const [contents, setContents] = useState(initialContents || []);
   const [skip, setSkip] = useState(0);
   const [limit] = useState(12);
@@ -15,7 +15,7 @@ const ContentList = ({ category, initialContents }) => {
   const fetchMoreData = async () => {
     try {
       const updatedSkip = skip + limit;
-      const data = await fetch(`${apiKey}api/blogs/?category=${category}&skip=${updatedSkip}&limit=${limit}`);
+      const data = await fetch(`${apiKey}api/blogs/?category=${category}&skip=${updatedSkip}&limit=${limit}`, { timeout: 15000 });
       const parsedData = await data.json();
 
       if (Array.isArray(parsedData.data)) {
@@ -57,13 +57,13 @@ const ContentList = ({ category, initialContents }) => {
       >
         <div className="grid grid-cols-2 mt-4 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 overflow-hidden">
           {contents && contents.map((element) => (
-            <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading}>
-              <div className="to-black relative overflow-hidden rounded-lg shadow-lg hover:scale-105 cursor-pointer transition-transform duration-300 ease-in-out ">
+            <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading} className='p-4'>
+              <div className="to-black relative overflow-hidden rounded-lg shadow-lg cursor-pointer transition-transform duration-300 ease-in-out ">
                 <div className="overflow-hidden flex items-center justify-center">
                   <Image width="144" height="144"
                     src={element.image}
                     alt="Image"
-                    className="object-cover"
+                    className="object-cover hover:scale-110 overflow-hidden"
                   />
                 </div>
                 <div className="text-center mt-2">

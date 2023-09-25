@@ -37,9 +37,9 @@ const search = () => {
   };
 
   const fetchSuggestions = async (query) => {
-    const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
+    const apiKey = process.env.API_KEY || "http://localhost:3000/";
     try {
-      const response = await fetch(`${apiKey}api/search_result/?query=${query}`);
+      const response = await fetch(`${apiKey}api/search_result/?query=${query}`, { timeout: 15000 });
       const data = await response.json();
 
       if (Array.isArray(data.suggestions)) {

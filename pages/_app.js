@@ -13,13 +13,13 @@ export const metadata = {
 
 
 function MyApp({ Component, pageProps }) {
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
+  const apiKey = process.env.API_KEY || "http://localhost:3000/";
   const [ads, setAds] = useState([]);
 
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const adsData = await fetch(`${apiKey}api/getads/`);
+        const adsData = await fetch(`${apiKey}api/getads/`, { timeout: 15000 });
         const parsedAdsData = await adsData.json();
 
         if (Array.isArray(parsedAdsData)) {
@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps }) {
                   </div>
                 </div>
               ))}
-              <div className="p-[3%] ">
+              <div className="p-[3%]">
                 <Component {...pageProps} />
               </div>
             </div>

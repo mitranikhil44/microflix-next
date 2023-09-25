@@ -19,6 +19,7 @@ function Contact() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        timeout: 15000 ,
       });
 
       if (response.ok) {

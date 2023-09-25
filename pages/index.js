@@ -25,17 +25,17 @@ export default function Home(props) {
 }
 
 export async function getServerSideProps({ query }) {
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
+  const apiKey = process.env.API_KEY || "http://localhost:3000/";
   const skip = parseInt(query.skip) || 0; // Get the skip value from query parameters
-  const limit = 12;
+  const limit = 24;
 
   try {
     const [
       hollywoodResponse,
       hollywoodAdultResponse,
     ] = await Promise.all([
-      fetch(`${apiKey}api/blogs/?category=hollywood&skip=${skip}&limit=${limit}`),
-      fetch(`${apiKey}api/blogs/?category=hollywood/adult&skip=${skip}&limit=${limit}`),
+      fetch(`${apiKey}api/blogs/?category=hollywood&skip=${skip}&limit=${limit}`, { timeout: 15000 }),
+      fetch(`${apiKey}api/blogs/?category=hollywood/adult&skip=${skip}&limit=${limit}`, { timeout: 15000 }),
     ]);
 
     const [
