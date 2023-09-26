@@ -4,7 +4,7 @@ import connectToDatabase from './database/db';
 import { Contents } from './database/models';
 
 const BASE_URL = 'https://hdhub4u.markets/page/';
-const TOTAL_PAGES = 788;
+const TOTAL_PAGES = 791;
 
 (async () => {
   await connectToDatabase();
@@ -67,17 +67,6 @@ const TOTAL_PAGES = 788;
   
       existingArticle = await Contents.findOne({ slug: slugToUse });
   
-      const transformedContent = {
-        filmHeaders,
-        filmH3AnchorTags,
-        filmH4AnchorTags,
-        filmPAnchorTags,
-        filmTrailers,
-        filmStorylines,
-        filmReviews,
-        // Include other scraped data here
-      };
-  
       if (existingArticle) {
         await Contents.findOneAndUpdate({ url }, {
           title: article.title,
@@ -87,12 +76,12 @@ const TOTAL_PAGES = 788;
           filmH3AnchorTags: filmH3AnchorTags,
           filmH4AnchorTags: filmH4AnchorTags,
           filmPAnchorTags: filmPAnchorTags,
-          filmTrailers: transformedContent,
+          filmTrailers: filmTrailers,
           filmStorylines: filmStorylines,
           filmReviews: filmReviews,
         });
       } else {
-        const newArticle = new Contents({
+        const newArticle = await new Contents({
           title: article.title,
           url,
           image: article.image,
@@ -101,11 +90,12 @@ const TOTAL_PAGES = 788;
           filmH3AnchorTags: filmH3AnchorTags,
           filmH4AnchorTags: filmH4AnchorTags,
           filmPAnchorTags: filmPAnchorTags,
-          filmTrailers: transformedContent,
+          filmTrailers: filmTrailers,
           filmStorylines: filmStorylines,
           filmReviews: filmReviews,
         });
         await newArticle.save();
+        
       }
     } catch (error) {
       console.error('Error processing article:', error.message);
