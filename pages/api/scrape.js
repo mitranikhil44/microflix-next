@@ -83,7 +83,13 @@ const TOTAL_PAGES = 788;
           title: article.title,
           image: article.image,
           slug: slugToUse,
-          content: transformedContent,
+          filmHeaders: filmHeaders,
+          filmH3AnchorTags: filmH3AnchorTags,
+          filmH4AnchorTags: filmH4AnchorTags,
+          filmPAnchorTags: filmPAnchorTags,
+          filmTrailers: transformedContent,
+          filmStorylines: filmStorylines,
+          filmReviews: filmReviews,
         });
       } else {
         const newArticle = new Contents({
@@ -91,7 +97,13 @@ const TOTAL_PAGES = 788;
           url,
           image: article.image,
           slug: slugToUse,
-          content: transformedContent,
+          filmHeaders: filmHeaders,
+          filmH3AnchorTags: filmH3AnchorTags,
+          filmH4AnchorTags: filmH4AnchorTags,
+          filmPAnchorTags: filmPAnchorTags,
+          filmTrailers: transformedContent,
+          filmStorylines: filmStorylines,
+          filmReviews: filmReviews,
         });
         await newArticle.save();
       }
