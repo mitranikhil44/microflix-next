@@ -9,22 +9,30 @@ const MoviesCollection = (props) => {
   const itemWidth = 140; // Assuming each item width is 140px
   const containerRef = useRef(null);
   const dataLength = props.data.length;
+  const [displayedData, setDisplayedData] = useState([]);
+  const itemsPerPage = 26;
 
   useEffect(() => {
     if (dataLength > 0) {
       const scrollInterval = setInterval(() => {
         setScrollPosition((prevPosition) => {
           const newPosition = prevPosition + itemWidth;
-          if (newPosition > dataLength * itemWidth) {
+          if (newPosition >= dataLength * itemWidth) {
+            // Reached the end, reset to the beginning
             return 0;
           }
           return newPosition;
         });
-      }, 3000);
+      }, 2000);
 
       return () => clearInterval(scrollInterval);
     }
   }, [dataLength]);
+
+  useEffect(() => {
+    // Load and display initial data
+    loadMoreData();
+  }, []);
 
   const showLoading = async () => {
     setIsLoading(true);
@@ -33,8 +41,28 @@ const MoviesCollection = (props) => {
     }, 5000);
   };
 
+  const loadMoreData = () => {
+    // Calculate the range of items to load
+    const startIndex = Math.max(0, displayedData.length - itemsPerPage);
+    const endIndex = displayedData.length + itemsPerPage;
+    
+    // Slice the new data to be displayed
+    const newData = props.data.slice(startIndex, endIndex).map((element) => (
+      <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading}>
+        <div className="m-[2%] overflow-hidden">
+          <div>
+            <Image width="150" height="200" src={element.image} alt="Image" className="cropped-image hover:scale-110 overflow-hidden rounded-lg" />
+          </div>
+        </div>
+      </Link>
+    ));
+
+    // Update the displayed data with the new data
+    setDisplayedData((prevData) => [...prevData, ...newData]);
+  };
+
   return (
-    <div className="overflow-hidden h-80 relative">
+    <div>
       {isLoading && <LoadingSpinner />}
       <Link href={props.linkPath} onClick={showLoading}>
         <div className="flex justify-between items-center m-2">
@@ -59,24 +87,18 @@ const MoviesCollection = (props) => {
         </div>
       </Link>
       <hr className="p-[1%]" />
-      <div
-        ref={containerRef}
-        className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
-        style={{
-          width: `${dataLength * itemWidth * 4}px`,
-          left: `-${scrollPosition}px`,
-          transition: "left 1s linear",
-        }}
-      >
-        {props.data.map((element, index) => (
-          <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading}>
-            <div className="m-[2%] overflow-hidden">
-              <div>
-                <Image width="150" height="150" src={element.image} alt="Image" className="hover:scale-110 overflow-hidden rounded-lg" />
-              </div>
-            </div>
-          </Link>
-        ))}
+      <div className="overflow-x-scroll overflow-y-hidden h-60 relative">
+        <div
+          ref={containerRef}
+          className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
+          style={{
+            width: `${dataLength * itemWidth * 4}px`,
+            left: `-${scrollPosition}px`,
+            transition: "left 1s linear",
+          }}
+        >
+          {displayedData}
+        </div>
       </div>
     </div>
   );

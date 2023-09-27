@@ -2,54 +2,22 @@ import Image from "next/image";
 
 export default function BlogPost(props) {
   function createMarkup(content) {
-    return { __html: content };
+    const modifiedContent = content.replace(/<img([^>]*)>/g, (match, attributes) => {
+      return `<Image${attributes}>`;
+    });
+  
+    return { __html: modifiedContent };
   }
-
-  console.log(props.myBlog.content);
+  
 
   return (
-    <div className="flex flex-col justify-center items-center py-6 px-4">
-      <div>
-        <div className="text-xs xs:text-sm md:text-base contentClass space-y-6 text-gray-700 gap-4">
-          {/* Render filmHeaders */}
-          {props.myBlog.filmHeaders.map((header, index) => (
-            <h2 key={index} dangerouslySetInnerHTML={createMarkup(header)}></h2>
-          ))}
-
-          {/* Render filmH3AnchorTags */}
-          {props.myBlog.filmH3AnchorTags.map((tag, index) => (
-            <h3 key={index} dangerouslySetInnerHTML={createMarkup(tag)}></h3>
-          ))}
-
-          {/* Render filmH4AnchorTags */}
-          {props.myBlog.filmH4AnchorTags.map((tag, index) => (
-            <h3 key={index} dangerouslySetInnerHTML={createMarkup(tag)}></h3>
-          ))}
-
-          {/* Render filmPAnchorTags */}
-          {props.myBlog.filmPAnchorTags.map((tag, index) => (
-            <p key={index} dangerouslySetInnerHTML={createMarkup(tag)}></p>
-          ))}
-
-          {/* Render filmTrailers */}
-          {props.myBlog.filmTrailers.map((trailer, index) => (
-            <div key={index} dangerouslySetInnerHTML={createMarkup(trailer)}></div>
-          ))}
-
-          {/* Render filmStorylines */}
-          {props.myBlog.filmStorylines.map((storyline, index) => (
-            <p key={index} dangerouslySetInnerHTML={createMarkup(storyline)}></p>
-          ))}
-
-          {/* Render filmReviews */}
-          {props.myBlog.filmReviews.map((review, index) => (
-            <div key={index} dangerouslySetInnerHTML={createMarkup(review)}></div>
-          ))}
+      <>
+        <div className="flex flex-col justify-center items-center py-6 px-4 text-xs xs:text-sm md:text-base contentClass text-gray-700" dangerouslySetInnerHTML={createMarkup(props.myBlog.content)}>
         </div>
-      </div>
-    </div>
+      </>
   );
 }
+
 
 export async function getServerSideProps(context) {
   const apiKey = process.env.API_KEY;

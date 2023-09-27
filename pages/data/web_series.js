@@ -1,6 +1,6 @@
 import ContentList from '../../components/ContentList';
 
-const Web_Series = ({ otherSeasons, indianSeasons }) => {
+const Web_Series = ({ otherSeasons }) => {
 
   return (
     <div>

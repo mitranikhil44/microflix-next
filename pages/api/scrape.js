@@ -11,35 +11,42 @@ const TOTAL_PAGES = 791;
 
   async function processArticle(article) {
     const { url } = article;
-  
+
     try {
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
-  
+
       const content = $('main.page-body').html();
-  
+      const modifiedContent = content.replace(/HDHub4u/g, match => {
+        if (match.includes('src="')) {
+          return match;
+        } else {
+          return 'Microflix'; 
+        }
+      });
+
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
-  
+
       let existingArticle;
       let slugToUse = slug;
-  
+
       existingArticle = await Contents.findOne({ slug: slugToUse });
-  
+
       if (existingArticle) {
         await Contents.updateOne({ url }, {
-          title: article.title || 'Unknown', // Use 'Unknown' if title is null
+          title: article.title,
           url,
           slug: article.slug,
           image: article.image,
-          content: content?.replace(/HDHub4u/g, 'Microflix').replace(/<img/g, '<Image') || 'No Content', // Use 'No Content' if content is null
+          content: modifiedContent
         });
       } else {
         const newArticle = await Contents.create({
-          title: article.title || 'Unknown', // Use 'Unknown' if title is null
+          title: article.title,
           url,
           image: article.image,
           slug: slug,
-          content: content?.replace(/HDHub4u/g, 'Microflix').replace(/<img/g, '<Image') || 'No Content', // Use 'No Content' if content is null
+          content: modifiedContent
         });
         await newArticle.save();
       }

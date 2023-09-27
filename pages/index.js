@@ -26,8 +26,8 @@ export default function Home(props) {
 
 export async function getServerSideProps({ query }) {
   const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
-  const skip = parseInt(query.skip) || 0; // Get the skip value from query parameters
-  const limit = 24;
+  const skip = parseInt(query.skip) || 0; 
+  const limit = 26;
 
   try {
     const [

@@ -1,61 +1,113 @@
 @tailwind base;
 @tailwind components;
 
-*{
+
+* {
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
   background-color: rgb(18 17 17);
   color: white;
 }
-/* .cropped-image {
-  width: desired-width;
-  height: desired-height;
-  overflow: hidden;
+
+.cropped-image {
+  height: 14rem;
 }
 
-.cropped-image img {
-  width: image-width;
-  height: image-height;
-  margin: -15% 0px 0 0;
-  } */
+.carouselClasses ul {
+  background: transparent;
+}
 
-  .gridClass{
-    display: grid;
-    grid-column: 4fr 1fr;
-  }
+.gridClass {
+  display: grid;
+  grid-column: 4fr 1fr;
+}
+.contentClass h3,
+.contentClass h4{
+  background: transparent;
+  margin: 3%;
+}
 
-  .responsive-embed-container{
-    padding: 2%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.contentClass h3,
+.contentClass h4{
+  background: transparent;
+}
 
-  .contentClass img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 2%;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out;
-    &:hover {
-      transform: scale(1.05);
-    }
-  }
+.contentClass h3 a,
+.contentClass h4 a {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(2, 122, 202, 0.2);
+  background-color: #007BFF; 
+  color: #fff; 
+  padding: 1% 2%;
+  text-decoration: none;
+  transition: transform 0.3s ease-in-out;
 
-  .contentClass p, .contentClass h3{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+  &:hover {
+    transform: scale(1.05);
   }
+}
 
-  .carouselClasses ul{
-    background: transparent;
+.contentClass h3 a:hover,
+.contentClass h4 a:hover {
+  background-color: #0056b3;
+}
+
+
+.contentClass p, .contentClass h3{
+  padding: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contentClass img {
+  width: 100%;
+  height: auto;
+  margin: 2%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
   }
-  
-  
-  
-  @tailwind utilities;
+}
+
+.contentClass div h2 a {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contentClass .responsive-embed-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.contentClass iframe {
+  margin: 2%;
+  width: fit-content;
+  height: 100%;
+}
+
+@media screen and (min-width: 475px) {
+  .contentClass iframe {
+    width: 100%;
+    height: 18rem;
+  }
+}
+
+@media screen and (min-width: 575px) {
+  .contentClass iframe {
+    width: 35rem;
+    height: 24rem;
+  }
+}
+
+
+
+@tailwind utilities;
