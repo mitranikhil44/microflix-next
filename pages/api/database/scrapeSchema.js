@@ -8,6 +8,7 @@ const scrapeSchema = new mongoose.Schema({
     "url": "String", // The URL of the content
     "image": "String", // The URL of the content's image
     "slug": "String", // A unique slug for the content
+    "content": "String",
     "filmHeaders": ["String"], // An array of strings for film headers
     "filmH3AnchorTags": ["String"], // An array of strings for H3 anchor tags
     "filmH4AnchorTags": ["String"], // An array of strings for H4 anchor tags

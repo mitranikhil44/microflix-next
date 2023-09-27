@@ -16,49 +16,7 @@ const TOTAL_PAGES = 791;
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
   
-      const filmHeaders = [];
-      $('main.page-body p span em strong').each((index, element) => {
-        const filmHeader = $(element).prop('outerHTML').replace("HDHub4u", "Microflix");
-        filmHeaders.push(filmHeader);
-      });
-  
-      const filmH3AnchorTags = [];
-      $('main.page-body h3 a').each((index, element) => {
-        const filmH3AnchorTag = $(element).prop('outerHTML').replace("<img", "<Image").replace("HDHub4u", "Microflix");
-        filmH3AnchorTags.push(filmH3AnchorTag);
-      });
-  
-      const filmH4AnchorTags = [];
-      $('main.page-body h4 a').each((index, element) => {
-        const filmH4AnchorTag = $(element).prop('outerHTML').replace("HDHub4u", "Microflix");
-        filmH4AnchorTags.push(filmH4AnchorTag);
-      });
-  
-      const filmPAnchorTags = [];
-      $('main.page-body p a').each((index, element) => {
-        const filmPAnchorTag = $(element).prop('outerHTML').replace("<img", "<Image").replace("HDHub4u", "Microflix");
-        filmPAnchorTags.push(filmPAnchorTag);
-      });
-  
-      const filmTrailers = [];
-      $('main.page-body div.responsive-embed-container').each((index, element) => {
-        const filmTrailer = $(element).prop('outerHTML').replace("HDHub4u", "Microflix");
-        filmTrailers.push(filmTrailer);
-      });
-  
-      const filmStorylines = [];
-      $('main.page-body p em').each((index, element) => {
-        const filmStoryline = $(element).prop('outerHTML').replace("HDHub4u", "Microflix");
-        filmStorylines.push(filmStoryline);
-      });
-  
-      const filmReviews = [];
-      $('main.page-body div.show-more__control em').each((index, element) => {
-        const filmReview = $(element).prop('outerHTML').replace("HDHub4u", "Microflix");
-        filmReviews.push(filmReview);
-      });
-  
-      // ... Repeat the process for other elements you want to scrape ...
+      const content = $('main.page-body').html();
   
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
   
@@ -68,34 +26,22 @@ const TOTAL_PAGES = 791;
       existingArticle = await Contents.findOne({ slug: slugToUse });
   
       if (existingArticle) {
-        await Contents.findOneAndUpdate({ url }, {
-          title: article.title,
+        await Contents.updateOne({ url }, {
+          title: article.title || 'Unknown', // Use 'Unknown' if title is null
+          url,
+          slug: article.slug,
           image: article.image,
-          slug: slugToUse,
-          filmHeaders: filmHeaders,
-          filmH3AnchorTags: filmH3AnchorTags,
-          filmH4AnchorTags: filmH4AnchorTags,
-          filmPAnchorTags: filmPAnchorTags,
-          filmTrailers: filmTrailers,
-          filmStorylines: filmStorylines,
-          filmReviews: filmReviews,
+          content: content?.replace(/HDHub4u/g, 'Microflix').replace(/<img/g, '<Image') || 'No Content', // Use 'No Content' if content is null
         });
       } else {
-        const newArticle = await new Contents({
-          title: article.title,
+        const newArticle = await Contents.create({
+          title: article.title || 'Unknown', // Use 'Unknown' if title is null
           url,
           image: article.image,
-          slug: slugToUse,
-          filmHeaders: filmHeaders,
-          filmH3AnchorTags: filmH3AnchorTags,
-          filmH4AnchorTags: filmH4AnchorTags,
-          filmPAnchorTags: filmPAnchorTags,
-          filmTrailers: filmTrailers,
-          filmStorylines: filmStorylines,
-          filmReviews: filmReviews,
+          slug: slug,
+          content: content?.replace(/HDHub4u/g, 'Microflix').replace(/<img/g, '<Image') || 'No Content', // Use 'No Content' if content is null
         });
         await newArticle.save();
-        
       }
     } catch (error) {
       console.error('Error processing article:', error.message);
