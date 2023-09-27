@@ -22,19 +22,15 @@
   display: grid;
   grid-column: 4fr 1fr;
 }
-.contentClass h3,
-.contentClass h4{
+
+.contentClass h3:not(:has(img)),
+.contentClass h4:not(:has(img)) {
   background: transparent;
   margin: 3%;
 }
 
-.contentClass h3,
-.contentClass h4{
-  background: transparent;
-}
-
-.contentClass h3 a,
-.contentClass h4 a {
+.contentClass h3:not(:has(img)) a,
+.contentClass h4:not(:has(img)) a  {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(2, 122, 202, 0.2);
   background-color: #007BFF; 
@@ -48,11 +44,10 @@
   }
 }
 
-.contentClass h3 a:hover,
-.contentClass h4 a:hover {
+.contentClass h3:not(:has(img)) a:hover,
+.contentClass h4:not(:has(img)) a:hover {
   background-color: #0056b3;
 }
-
 
 .contentClass p, .contentClass h3{
   padding: 3%;
