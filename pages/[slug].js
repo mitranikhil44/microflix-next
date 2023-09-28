@@ -1,12 +1,8 @@
 import Image from "next/image";
 
 export default function BlogPost(props) {
-  function createMarkup(content) {
-    const modifiedContent = content.replace(/<img([^>]*)>/g, (match, attributes) => {
-      return `<Image${attributes}>`;
-    });
-  
-    return { __html: modifiedContent };
+  function createMarkup(content) {  
+    return { __html: content };
   }
   
 

@@ -4,6 +4,9 @@ const contentSchema = new mongoose.Schema({
     title: {
         type: String,
     },
+    imdb: {
+        type: [String], 
+    },
     url: {
         type: String,
     },

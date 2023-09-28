@@ -16,13 +16,33 @@ const TOTAL_PAGES = 791;
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
 
-      const content = $('main.page-body').html();
-      const modifiedContent = content.replace(/HDHub4u/g, match => {
-        if (match.includes('src="')) {
-          return match;
+      const contentElement = $('main.page-body');
+      if (!contentElement.length) {
+        console.error('Content element not found for article:', article.title);
+        return;
+      }
+
+      const content = contentElement.html().replace(/HDHub4u/g, (match, offset, input) => {
+        const srcIndex = input.lastIndexOf('src="', offset);
+
+        if (srcIndex === -1 || input.indexOf('"', srcIndex + 5) < offset) {
+          return 'Microflix';
         } else {
-          return 'Microflix'; 
+          return match;
         }
+      });
+
+      const ratingElements = $(content).find('span').filter(function () {
+        return /Rating:/i.test($(this).text());
+      });
+
+      const imdbRatings = [];
+
+      ratingElements.each(function () {
+        const ratingSpan = $(this);
+        const imdbRating = ratingSpan.parent().find('span').text().trim();
+        const cleanedRating = imdbRating.replace(/\/10$/, '');
+        imdbRatings.push(cleanedRating);
       });
 
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
@@ -35,18 +55,21 @@ const TOTAL_PAGES = 791;
       if (existingArticle) {
         await Contents.updateOne({ url }, {
           title: article.title,
+          imdb: imdbRatings, 
           url,
           slug: article.slug,
           image: article.image,
-          content: modifiedContent
+          content: content
         });
-      } else {
+      }
+       else {
         const newArticle = await Contents.create({
           title: article.title,
+          imdb: imdbRatings,
           url,
           image: article.image,
           slug: slug,
-          content: modifiedContent
+          content: content
         });
         await newArticle.save();
       }
@@ -54,6 +77,7 @@ const TOTAL_PAGES = 791;
       console.error('Error processing article:', error.message);
     }
   }
+
 
   async function scrapePage(pageNumber) {
     const url = `${BASE_URL}${pageNumber}/`;

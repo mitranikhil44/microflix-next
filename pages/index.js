@@ -7,7 +7,6 @@ export default function Home(props) {
     hollywoodAdultData
   } = props;
 
-
   return (
     <main>
       <MoviesCollection
@@ -24,18 +23,17 @@ export default function Home(props) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps() {
   const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
-  const skip = parseInt(query.skip) || 0; 
-  const limit = 26;
+  const page = 1; 
 
   try {
     const [
       hollywoodResponse,
       hollywoodAdultResponse,
     ] = await Promise.all([
-      fetch(`${apiKey}api/blogs/?category=hollywood&skip=${skip}&limit=${limit}`, { timeout: 15000 }),
-      fetch(`${apiKey}api/blogs/?category=hollywood/adult&skip=${skip}&limit=${limit}`, { timeout: 15000 }),
+      fetch(`${apiKey}api/blogs/?category=hollywood&page=${page}`),
+      fetch(`${apiKey}api/blogs/?category=hollywood/adult&page=${page}`),
     ]);
 
     const [

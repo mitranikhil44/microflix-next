@@ -57,7 +57,7 @@
   flex-wrap: wrap;
 }
 
-.contentClass img {
+.contentClass p img, .contentClass h3 img{
   width: 100%;
   height: auto;
   margin: 2%;

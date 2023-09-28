@@ -12,7 +12,7 @@ const Web_Series = ({ otherSeasons }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const hData = await fetch(`${apiKey}api/blogs/?category=hollywood/seasons&skip=0&limit=12`, { timeout: 15000 });
+    const hData = await fetch(`${apiKey}api/blogs/?category=hollywood/seasons&page=1`, { timeout: 15000 });
     let hSeasons = await hData.json();
     hSeasons = hSeasons.data || [];
 

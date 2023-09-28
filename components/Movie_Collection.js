@@ -47,8 +47,8 @@ const MoviesCollection = (props) => {
     const endIndex = displayedData.length + itemsPerPage;
     
     // Slice the new data to be displayed
-    const newData = props.data.slice(startIndex, endIndex).map((element) => (
-      <Link key={element.slug} href={`/content/${element.slug}`} onClick={showLoading}>
+    const newData = props.data.slice(startIndex, endIndex).map((element, index) => (
+      <Link key={index + 1} href={`/${element.slug}`} onClick={showLoading}>
         <div className="m-[2%] overflow-hidden">
           <div>
             <Image width="150" height="200" src={element.image} alt="Image" className="cropped-image hover:scale-110 overflow-hidden rounded-lg" />
