@@ -13,7 +13,7 @@ export const metadata = {
 
 
 function MyApp({ Component, pageProps }) {
-  const apiKey = process.env.API_KEY || "http://localhost:3000/";
+  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
   const [ads, setAds] = useState([]);
 
   useEffect(() => {

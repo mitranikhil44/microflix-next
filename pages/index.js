@@ -4,20 +4,26 @@ export default function Home(props) {
 
   const {
     hollywoodData,
-    hollywoodAdultData
+    hollywoodAdultData,
+    topHollywoodData
   } = props;
 
   return (
     <main>
       <MoviesCollection
-        data={hollywoodData.data}
+        data={hollywoodData[0].data}
         collectionName={"Contents"}
         linkPath="/data/contents"
       />
       <MoviesCollection
-        data={hollywoodAdultData.data}
+        data={topHollywoodData[0].data}
+        collectionName={"Top Contents"}
+        linkPath="/data/top_contents"
+      />
+      <MoviesCollection
+        data={hollywoodAdultData[0].data}
         collectionName={"18+ Contents"}
-        linkPath="/data/18+_contents"
+        linkPath="/data_18+_contents"
       />
     </main>
   );
@@ -31,23 +37,28 @@ export async function getServerSideProps() {
     const [
       hollywoodResponse,
       hollywoodAdultResponse,
+      topHollywoodResponse,
     ] = await Promise.all([
       fetch(`${apiKey}api/blogs/?category=hollywood&page=${page}`),
-      fetch(`${apiKey}api/blogs/?category=hollywood/adult&page=${page}`),
+      fetch(`${apiKey}api/blogs/?category=hollywood_adult&page=${page}`),
+      fetch(`${apiKey}api/blogs/?category=top_hollywood&page=${page}`),
     ]);
 
     const [
       hollywoodData,
       hollywoodAdultData,
+      topHollywoodData,
     ] = await Promise.all([
       hollywoodResponse.json(),
       hollywoodAdultResponse.json(),
+      topHollywoodResponse.json(),
     ]);
 
     return {
       props: {
         hollywoodData,
         hollywoodAdultData,
+        topHollywoodData,
       },
     };
   } catch (error) {
@@ -56,6 +67,7 @@ export async function getServerSideProps() {
       props: {
         hollywoodData: { data: [] },
         hollywoodAdultData: { data: [] },
+        topHollywoodData: { data: [] },
       },
     };
   }

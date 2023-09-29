@@ -1,9 +1,9 @@
 import ContentList from '../../components/ContentList';
 
-const Other_Country_18_Content = ({ initialContents }) => {
+const Other_Country_Content = ({ initialContents }) => {
   return (
     <div>
-      <ContentList category="hollywood_adult" initialContents={initialContents[0].data} />
+      <ContentList category="top_hollywood" initialContents={initialContents[0].data} />
     </div>
   );
 };
@@ -11,7 +11,7 @@ const Other_Country_18_Content = ({ initialContents }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const data = await fetch(`${apiKey}api/blogs/?category=hollywood_adult&page=1`, { timeout: 15000 });
+    const data = await fetch(`${apiKey}api/blogs/?category=top_hollywood&page=1`, { timeout: 15000 });
     const movies = await data.json();
     return {
       props: { initialContents: movies },
@@ -25,4 +25,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default Other_Country_18_Content;
+export default Other_Country_Content;

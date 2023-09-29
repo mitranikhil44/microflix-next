@@ -3,7 +3,7 @@ import ContentList from '../../components/ContentList';
 const Other_Country_Content = ({ initialContents }) => {
   return (
     <div>
-      <ContentList category="hollywood" initialContents={initialContents.data} />
+      <ContentList category="hollywood" initialContents={initialContents[0].data} />
     </div>
   );
 };

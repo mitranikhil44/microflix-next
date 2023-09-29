@@ -47,15 +47,26 @@ const MoviesCollection = (props) => {
     const endIndex = displayedData.length + itemsPerPage;
     
     // Slice the new data to be displayed
-    const newData = props.data.slice(startIndex, endIndex).map((element, index) => (
-      <Link key={index + 1} href={`/${element.slug}`} onClick={showLoading}>
-        <div className="m-[2%] overflow-hidden">
-          <div>
-            <Image width="150" height="200" src={element.image} alt="Image" className="cropped-image hover:scale-110 overflow-hidden rounded-lg" />
+    const newData = props.data.slice(startIndex, endIndex).map((element, index) => {
+      // Extract numeric IMDb rating, or default to 0 if element.imdb is null or undefined
+      const imdbRating = parseFloat(element.imdb?.[0]?.match(/[\d.]+/) || '0');
+      return (
+        <Link key={index + 1} href={`/${element.slug}`} onClick={showLoading}>
+          <div className={`m-[2%] overflow-hidden`}>
+            <div className="relative">
+              <img
+                src={element.image}
+                alt="Image"
+                className="w-40 h-56 cropped-image hover:scale-110 overflow-hidden rounded-lg"
+              />
+              <p className={`IMDB rounded-tl-lg absolute top-0 left-0 overflow-hidden p-[1%] text-white ${imdbRating >= 9 ? 'bg-green-700' : imdbRating >= 8 ? "bg-green-600": imdbRating >= 7 ? "bg-green-500": imdbRating >= 6.5 ? "bg-yellow-700": imdbRating >= 6 ? "bg-yellow-600": imdbRating >= 5.5 ? "bg-yellow-500": imdbRating >= 5 ? "bg-red-500": imdbRating >= 4.5 ? "bg-red-600": "bg-red-700"}`}>
+                {imdbRating.toFixed(1)}
+              </p>
+            </div>
           </div>
-        </div>
-      </Link>
-    ));
+        </Link>
+      );
+    });   
 
     // Update the displayed data with the new data
     setDisplayedData((prevData) => [...prevData, ...newData]);
