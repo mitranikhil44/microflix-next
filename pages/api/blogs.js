@@ -82,7 +82,7 @@ export default async function handler(req, res) {
 
       // Include IMDb rankings where available
       const topData = await Contents.find({ ...topFilterConditions, imdb: { $exists: true } })
-      .sort({ imdb: 1 })
+      .sort({ imdb: -1 })
         .skip((page - 1) * pageSize)
         .limit(pageSize)
         .exec();
