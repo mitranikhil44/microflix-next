@@ -12,7 +12,7 @@ export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
     const contents = await fetch(`${apiKey}api/blogs/?category=hollywood&page=1`, { timeout: 15000 });
-    const contentsData = await contents.json();
+    let contentsData = await contents.json();
     contentsData = contentsData[0].data || [];
     return {
       props: { initialContents: contentsData },
