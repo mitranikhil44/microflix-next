@@ -10,7 +10,7 @@ const MoviesCollection = (props) => {
   const containerRef = useRef(null);
   const dataLength = props.data.length;
   const [displayedData, setDisplayedData] = useState([]);
-  const itemsPerPage = 26;
+  const itemsPerPage = 20;
 
   useEffect(() => {
     if (dataLength > 0) {

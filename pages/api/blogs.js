@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   await connectToDatabase();
 
   const page = parseInt(req.query.page) || 1;
-  const pageSize = parseInt(req.query.pageSize) || 20;
+  const pageSize = parseInt(req.query.pageSize) || 12;
   const category = req.query.category || 'hollywood';
 
   try {
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       }
 
       // Include IMDb rankings where available
-      const data = await Contents.find({ ...filterConditions, imdb: { $exists: true } })
+      const data = await Contents.find({ ...filterConditions})
         .skip((page - 1) * pageSize)
         .limit(pageSize)
         .exec();

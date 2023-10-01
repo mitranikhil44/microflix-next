@@ -3,7 +3,7 @@ import ContentList from '../../components/ContentList';
 const Other_Country_18_Content = ({ initialContents }) => {
   return (
     <div>
-      <ContentList category="hollywood_adult" initialContents={initialContents} />
+      <ContentList category="top_hollywood_adult" initialContents={initialContents} />
     </div>
   );
 };
@@ -11,11 +11,11 @@ const Other_Country_18_Content = ({ initialContents }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const adult = await fetch(`${apiKey}api/blogs/?category=hollywood_adult&page=1`, { timeout: 15000 });
-    const adultData = await adult.json();
-    adultData = adultData[0].data || [];
+    const topAdult = await fetch(`${apiKey}api/blogs/?category=top_hollywood_adult&page=1`, { timeout: 15000 });
+    let topAdultData = await topAdult.json();
+    topAdultData = topAdultData[0].data
     return {
-      props: { initialContents: adultData },
+      props: { initialContents: topAdultData },
     };
   } catch (error) {
     return {

@@ -1,73 +1,79 @@
-import MoviesCollection from "../components/Movie_Collection";
+import React from 'react';
+import MoviesCollection from '../components/Movie_Collection';
 
 export default function Home(props) {
-
-  const {
-    hollywoodData,
-    hollywoodAdultData,
-    topHollywoodData
-  } = props;
+  const categories = [
+    { data: props.hollywoodData, collectionName: 'hollywoods', linkPath: '/data/hollywoods' },
+    { data: props.topHollywoodData, collectionName: 'Top hollywoods', linkPath: '/data/top_hollywoods' },
+    { data: props.hollywoodMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
+    { data: props.topHollywoodMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
+    { data: props.hollywoodSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
+    { data: props.topHollywoodSeasonsData, collectionName: 'Top Web Series', linkPath: '/data/top_web_serires_seasons' },
+    { data: props.hollywoodAdultData, collectionName: '18+ hollywoods', linkPath: '/data_18+_hollywoods' },
+    { data: props.topHollywoodAdultData, collectionName: 'Top 18+ hollywoods', linkPath: '/data/top_18+_hollywoods' },
+  ];
+  
 
   return (
     <main>
-      <MoviesCollection
-        data={hollywoodData[0].data}
-        collectionName={"Contents"}
-        linkPath="/data/contents"
-      />
-      <MoviesCollection
-        data={topHollywoodData[0].data}
-        collectionName={"Top Contents"}
-        linkPath="/data/top_contents"
-      />
-      <MoviesCollection
-        data={hollywoodAdultData[0].data}
-        collectionName={"18+ Contents"}
-        linkPath="/data_18+_contents"
-      />
+      {categories.map((category, index) => (
+        <MoviesCollection
+          key={index + 1}
+          data={category.data[0].data}
+          collectionName={category.collectionName}
+          linkPath={category.linkPath}
+        />
+      ))}
     </main>
   );
 }
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY || "https://microflix.vercel.app/";
-  const page = 1; 
+  const apiKey = process.env.API_KEY || 'https://microflix.vercel.app/';
 
   try {
-    const [
-      hollywoodResponse,
-      hollywoodAdultResponse,
-      topHollywoodResponse,
-    ] = await Promise.all([
-      fetch(`${apiKey}api/blogs/?category=hollywood&page=${page}`),
-      fetch(`${apiKey}api/blogs/?category=hollywood_adult&page=${page}`),
-      fetch(`${apiKey}api/blogs/?category=top_hollywood&page=${page}`),
-    ]);
+    const categories = [
+      'hollywoods',
+      'top_hollywoods',
+      'hollywood_movies',
+      'top_hollywood_movies',
+      'hollywood_seasons',
+      'top_hollywood_seasons',
+      'hollywood_adult',
+      'top_hollywood_adult',
+    ];
 
-    const [
-      hollywoodData,
-      hollywoodAdultData,
-      topHollywoodData,
-    ] = await Promise.all([
-      hollywoodResponse.json(),
-      hollywoodAdultResponse.json(),
-      topHollywoodResponse.json(),
-    ]);
+    const fetchDataPromises = categories.map(async (category) => {
+      const response = await fetch(`${apiKey}api/blogs/?category=${category}&page=1`);
+      return response.json();
+    });
+
+    const data = await Promise.all(fetchDataPromises);
 
     return {
       props: {
-        hollywoodData,
-        hollywoodAdultData,
-        topHollywoodData,
+        hollywoodData: data[0],
+        topHollywoodData: data[1],
+        hollywoodMoviesData: data[2],
+        topHollywoodMoviesData: data[3],
+        hollywoodSeasonsData: data[4],
+        topHollywoodSeasonsData: data[5],
+        hollywoodAdultData: data[6],
+        topHollywoodAdultData: data[7],
       },
     };
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error:', error);
     return {
       props: {
         hollywoodData: { data: [] },
-        hollywoodAdultData: { data: [] },
         topHollywoodData: { data: [] },
+        hollywoodMoviesData: { data: [] },
+        topHollywoodMoviesData: { data: [] },
+        hollywoodSeasonsData: { data: [] },
+        topHollywoodSeasonsData: { data: [] },
+        hollywoodAdultData: { data: [] },
+        topHollywoodAdultData: { data: [] },
       },
     };
   }

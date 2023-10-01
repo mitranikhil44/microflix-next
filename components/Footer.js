@@ -14,17 +14,19 @@ const Footer = () => {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <header className="text-gray-400 body-font sticky bottom-0 left-0 text-sm md:text-base lg:text-lg bg-transparent">
-        <div className='flex justify-center items-center bg-slate-600 rounded-3xl w-[75%] mx-auto mb-[1%] p-[1%]'>
-          <Link href="/data/movies" className="mr-3 md:mr-5 hover:text-white bg-transparent" onClick={showLoading}>Movies</Link>
-          <Link href="/data/web_series" className="mr-3 md:mr-5 hover:text-white bg-transparent" onClick={showLoading}>Web Series</Link>
-          <div className='hidden xs:block bg-transparent'>
-            <Link href="/data/contents" className="mr-3 md:mr-5 hover:text-white bg-transparent" onClick={showLoading}>Contents</Link>
-            <Link href="/data/18+_contents" className="mr-3 md:mr-5 hover:text-white bg-transparent" onClick={showLoading}>18+ Contents</Link>
+      <header className="text-gray-400 body-font sticky bottom-0 left-0 text-xs md:text-sm lg:text-base xl:text-lg 2xl:text-2xl bg-transparent">
+        <div className='flex justify-center items-center bg-slate-600 rounded-3xl w-[85%] mx-auto mb-[1%] p-[1%]'>
+          <Link href="/data/movies" className="mr-3 md:mr-5 xl:mr-8 hover:text-white bg-transparent" onClick={showLoading}>Movies</Link>
+          <Link href="/data/web_series" className="mr-3 md:mr-5 xl:mr-8 hover:text-white bg-transparent" onClick={showLoading}>Web Series</Link>
+          <div className='hidden bg-transparent xs:block '>
+            <Link href="/data/contents" className="mr-3 md:mr-5 xl:mr-8 hover:text-white bg-transparent" onClick={showLoading}>Contents</Link>
+            <Link href="/data/18+_contents" className="mr-3 md:mr-5 xl:mr-8 hover:text-white bg-transparent" onClick={showLoading}>18+ Contents</Link>
           </div>
 
-          {/* Dropdown Button */}
-          <div className="relative group bg-transparent xs:hidden">
+          {/* Dropdown Buttons */}
+
+          {/* More Contents Dropdown Button */}
+          <div className="relative group bg-transparent xs:hidden mr-3 md:mr-5 xl:mr-8">
             <button className="text-white rounded-md focus:outline-none flex justify-center items-center gap-1">
               More <svg className="bg-transparent h-4 w-4 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -33,7 +35,23 @@ const Footer = () => {
             </button>
             <ul className="absolute hidden overflow-hidden bottom-0 rounded-md text-gray-600 pt-2 group-hover:block z-10 w-40">
               <Link href="/data/contents" className="block px-4 py-2" onClick={showLoading}>Contents</Link>
-              <Link href="/data/18+_contents" className="block px-4 py-2" onClick={showLoading}>18+ Contents</Link>
+              <Link href="/data/18+_contents" className="block px-4 py-2" onClick={showLoading}>18+ Contents</Link>              
+            </ul>
+          </div>
+
+          {/* Top Rated Contents Button */}
+          <div className="relative group bg-transparent">
+            <button className="text-white rounded-md focus:outline-none flex justify-center items-center gap-1">
+              Top Rated <svg className="bg-transparent h-4 w-4 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fillRule="evenodd" d="M10 0a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 100-16 8 8 0 000 16z" clipRule="evenodd" />
+              </svg>
+            </button>
+            <ul className="absolute hidden overflow-hidden bottom-0 rounded-md text-gray-600 pt-2 group-hover:block z-10 w-40">
+            <Link href="/data/top_contents" className="block px-4 py-2" onClick={showLoading}>Top Contents</Link>
+              <Link href="/data/top_18+_contents" className="block px-4 py-2" onClick={showLoading}>Top 18+ Contents</Link>
+              <Link href="/data/top_movies" className="block px-4 py-2" onClick={showLoading}>Top Movies</Link>
+              <Link href="/data/top_web_series" className="block px-4 py-2" onClick={showLoading}>Top Web Series</Link>
             </ul>
           </div>
           {/* End Dropdown Button */}

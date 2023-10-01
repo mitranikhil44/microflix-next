@@ -4,7 +4,7 @@ const Web_Series = ({ initialContents }) => {
 
   return (
     <div>
-        <ContentList category="hollywood_seasons" initialContents={initialContents} />
+        <ContentList category="top_hollywood_seasons" initialContents={initialContents} />
     </div>
   );
 };
@@ -12,13 +12,13 @@ const Web_Series = ({ initialContents }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const webSeries = await fetch(`${apiKey}api/blogs/?category=hollywood_seasons&page=1`, { timeout: 15000 });
-    let webSeriesData = await webSeries.json();
-    webSeriesData = webSeriesData[0].data || [];
+    const topSeries = await fetch(`${apiKey}api/blogs/?category=top_hollywood_seasons&page=1`, { timeout: 15000 });
+    let topSeriesData = await topSeries.json();
+    topSeriesData = topSeriesData[0].data || [];
 
     return {
       props: {
-        initialContents: webSeriesData,
+        initialContents: topSeriesData,
       },
     };
   } catch (error) {
