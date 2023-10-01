@@ -3,14 +3,14 @@ import MoviesCollection from '../components/Movie_Collection';
 
 export default function Home(props) {
   const categories = [
-    { data: props.hollywoodData, collectionName: 'hollywoods', linkPath: '/data/hollywoods' },
-    { data: props.topHollywoodData, collectionName: 'Top hollywoods', linkPath: '/data/top_hollywoods' },
+    { data: props.hollywoodData, collectionName: 'hollywoods', linkPath: '/data/hollywood' },
+    { data: props.topHollywoodData, collectionName: 'Top hollywoods', linkPath: '/data/top_hollywood' },
     { data: props.hollywoodMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
     { data: props.topHollywoodMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
     { data: props.hollywoodSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
     { data: props.topHollywoodSeasonsData, collectionName: 'Top Web Series', linkPath: '/data/top_web_serires_seasons' },
-    { data: props.hollywoodAdultData, collectionName: '18+ hollywoods', linkPath: '/data_18+_hollywoods' },
-    { data: props.topHollywoodAdultData, collectionName: 'Top 18+ hollywoods', linkPath: '/data/top_18+_hollywoods' },
+    { data: props.hollywoodAdultData, collectionName: '18+ hollywoods', linkPath: '/data_18+_contents' },
+    { data: props.topHollywoodAdultData, collectionName: 'Top 18+ hollywoods', linkPath: '/data/top_18+_contents' },
   ];
   
 
@@ -33,8 +33,8 @@ export async function getServerSideProps() {
 
   try {
     const categories = [
-      'hollywoods',
-      'top_hollywoods',
+      'hollywood',
+      'top_hollywood',
       'hollywood_movies',
       'top_hollywood_movies',
       'hollywood_seasons',
