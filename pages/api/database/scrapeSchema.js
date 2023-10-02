@@ -7,6 +7,10 @@ const scrapeSchema = new mongoose.Schema({
   image: String,
   slug: String,
   content: String,
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export const Contents = mongoose.models.Contents || mongoose.model('Contents', scrapeSchema);

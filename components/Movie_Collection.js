@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import LoadingSpinner from "./Loading";
 import Image from "next/image";
 import Link from "next/link";
 
-const MoviesCollection = (props) => {
+const MoviesCollection = ({ data, linkPath, collectionName }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const itemWidth = 140; // Assuming each item width is 140px
-  const containerRef = useRef(null);
-  const dataLength = props.data.length;
+  const dataLength = data.length;
   const [displayedData, setDisplayedData] = useState([]);
   const itemsPerPage = 20;
 
@@ -34,7 +33,7 @@ const MoviesCollection = (props) => {
     loadMoreData();
   }, []);
 
-  const showLoading = async () => {
+  const showLoading = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
@@ -45,16 +44,17 @@ const MoviesCollection = (props) => {
     // Calculate the range of items to load
     const startIndex = Math.max(0, displayedData.length - itemsPerPage);
     const endIndex = displayedData.length + itemsPerPage;
-    
+
     // Slice the new data to be displayed
-    const newData = props.data.slice(startIndex, endIndex).map((element, index) => {
-      // Extract numeric IMDb rating, or default to 0 if element.imdb is null or undefined
+    const newData = data.slice(startIndex, endIndex).map((element) => {
       const imdbRating = parseFloat(element.imdb?.[0]?.match(/[\d.]+/) || '0');
       return (
-        <Link key={index + 1} href={`/${element.slug}`} onClick={showLoading}>
+        <Link key={element.slug} href={`/${element.slug}`} onClick={showLoading}>
           <div className={`m-[2%] overflow-hidden`}>
             <div className="relative">
-              <img
+              <Image
+                width={40}
+                height={56}
                 src={element.image}
                 alt="Image"
                 className="w-40 h-56 cropped-image hover:scale-110 overflow-hidden rounded-lg"
@@ -66,7 +66,7 @@ const MoviesCollection = (props) => {
           </div>
         </Link>
       );
-    });   
+    });
 
     // Update the displayed data with the new data
     setDisplayedData((prevData) => [...prevData, ...newData]);
@@ -75,10 +75,10 @@ const MoviesCollection = (props) => {
   return (
     <div>
       {isLoading && <LoadingSpinner />}
-      <Link href={props.linkPath} onClick={showLoading}>
+      <Link href={linkPath} onClick={showLoading}>
         <div className="flex justify-between items-center m-2">
           <h3 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl m-2">
-            {props.collectionName}
+            {collectionName}
           </h3>
           <div>
             <svg
@@ -100,7 +100,6 @@ const MoviesCollection = (props) => {
       <hr className="p-[1%]" />
       <div className="overflow-x-scroll overflow-y-hidden h-60 relative">
         <div
-          ref={containerRef}
           className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
           style={{
             width: `${dataLength * itemWidth * 4}px`,

@@ -15,7 +15,6 @@ const Footer = () => {
     <>
       {isLoading && <LoadingSpinner />}
       <header className="text-gray-400 body-font sticky bottom-0 left-0 text-xs xxs:text-sm lg:text-base xl:text-lg 2xl:text-2xl bg-transparent">
-
         <div className='flex justify-center items-center rounded-xl xs:rounded-2xl lg:rounded-3xl w-[85%] mx-auto mb-[1%] p-[2%] vignette'>
           <Link href="/data/movies" className="mr-3 md:mr-5 xl:mr-8 hover:text-yellow-500 bg-transparent" onClick={showLoading}>Movies</Link>
           <Link href="/data/web_series" className="mr-3 md:mr-5 xl:mr-8 hover:text-yellow-500 bg-transparent" onClick={showLoading}>Web Series</Link>

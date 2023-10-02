@@ -4,7 +4,7 @@ import connectToDatabase from './database/db';
 import { Contents } from './database/models';
 
 const BASE_URL = 'https://hdhub4u.markets/page/';
-const TOTAL_PAGES = 791;
+const TOTAL_PAGES = 100;
 
 (async () => {
   await connectToDatabase();
@@ -32,44 +32,49 @@ const TOTAL_PAGES = 791;
         }
       });
 
-      const ratingElements = $(content).find('span').filter(function () {
-        return /Rating:/i.test($(this).text());
+      const ratingElements = $(content).find('div div div div div div div span').filter(function () {
+        const text = $(this).text().trim();
+        return /\/10|\d+\.\d+/i.test(text); 
       });
-
+      
       const imdbRatings = [];
-
+      
       ratingElements.each(function () {
         const ratingSpan = $(this);
-        const imdbRating = ratingSpan.parent().find('span').text().trim();
-        const cleanedRating = imdbRating.replace(/\/10$/, '');
+        const imdbRating = ratingSpan.text().trim();
+        let cleanedRating = imdbRating.replace(/\/10$/, ''); // Remove "/10" at the end
+        cleanedRating = cleanedRating.replace(/iMDB Rating:|iMDB Rating:|Rating:/i, '').trim(); // Remove text variations and trim spaces
         imdbRatings.push(cleanedRating);
       });
 
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
 
-      let existingArticle;
-      let slugToUse = slug;
-
-      existingArticle = await Contents.findOne({ slug: slugToUse });
-
+      // Try to find an existing document by URL
+      const existingArticle = await Contents.findOne({ url });
+  
       if (existingArticle) {
-        await Contents.updateOne({ url }, {
-          title: article.title,
-          imdb: imdbRatings, 
-          url,
-          slug: article.slug,
-          image: article.image,
-          content: content
-        });
-      }
-       else {
-        const newArticle = await Contents.create({
+        // Update the existing document
+        await Contents.findOneAndUpdate(
+          { url },
+          {
+            title: article.title,
+            imdb: imdbRatings,
+            slug: article.slug,
+            image: article.image,
+            content: content,
+            updatedAt: Date.now(), // Set updatedAt to the current date and time
+          }
+        );
+      } else {
+        // Create a new document
+        const newArticle = new Contents({
           title: article.title,
           imdb: imdbRatings,
           url,
-          image: article.image,
           slug: slug,
-          content: content
+          image: article.image,
+          content: content,
+          updatedAt: Date.now(), // Set updatedAt to the current date and time
         });
         await newArticle.save();
       }
@@ -77,7 +82,6 @@ const TOTAL_PAGES = 791;
       console.error('Error processing article:', error.message);
     }
   }
-
 
   async function scrapePage(pageNumber) {
     const url = `${BASE_URL}${pageNumber}/`;
@@ -105,8 +109,8 @@ const TOTAL_PAGES = 791;
     }
   }
 
-  async function processPages(startPage = 610) {
-    const pageNumbers = Array.from({ length: `TOTAL_PAGES` }, (_, i) => startPage + i);
+  async function processPages(startPage = 1) {
+    const pageNumbers = Array.from({ length: TOTAL_PAGES }, (_, i) => startPage + i);
   
     for (const pageNumber of pageNumbers) {
       await scrapePage(pageNumber);

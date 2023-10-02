@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     ) {
       // Fetch data for "top_content" categories here
       let topFilterConditions = {};
-    
+
       if (category === 'top_content_movies') {
         topFilterConditions.title = { $not: /season/i };
       } else if (category === 'top_content_seasons') {
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
       } else if (category === 'top_contents') {
         // No specific filter for 'top_content' category
       }
-    
+
       // Include IMDb rankings where available
       const topData = await Contents.find({ ...topFilterConditions, imdb: { $exists: true } })
         .sort({ imdb: -1 }) // Sort by IMDb rating in descending order
@@ -88,14 +88,14 @@ export default async function handler(req, res) {
         .skip((page - 1) * pageSize) // Apply pagination
         .limit(pageSize)
         .exec();
-    
+
       response.push({
         data: topData,
         currentPage: page,
         pageSize,
       });
     }
-    
+
 
     // Only respond with data if one of the valid categories matched
     if (response.length > 0) {

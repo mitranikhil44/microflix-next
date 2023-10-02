@@ -19,6 +19,10 @@ const contentSchema = new mongoose.Schema({
     content: {
         type: String,
     },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 export const Contents = mongoose.models.Contents || mongoose.model('Contents', contentSchema);
