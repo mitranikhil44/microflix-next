@@ -105,13 +105,14 @@ const TOTAL_PAGES = 791;
     }
   }
 
-  async function processPages() {
-    const pageNumbers = Array.from({ length: TOTAL_PAGES }, (_, i) => i + 1);
-
+  async function processPages(startPage = 610) {
+    const pageNumbers = Array.from({ length: `TOTAL_PAGES` }, (_, i) => startPage + i);
+  
     for (const pageNumber of pageNumbers) {
       await scrapePage(pageNumber);
     }
   }
+  
 
   try {
     await processPages();

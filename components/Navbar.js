@@ -23,7 +23,7 @@ const Navbar = () => {
           </div>
         </Link>
         <div className="space-x-4">
-          <Link href="/contact_us" className="text-white hover:text-gray-400" onClick={showLoading}>
+          <Link href="/contact_us" className="text-white hover:text-yellow-500" onClick={showLoading}>
             Contact
           </Link>
           {/* Add more links here */}
