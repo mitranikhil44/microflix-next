@@ -3,14 +3,14 @@ import MoviesCollection from '../components/Movie_Collection';
 
 export default function Home(props) {
   const categories = [
-    { data: props.hollywoodData, collectionName: 'Contents', linkPath: '/data/contents' },
-    { data: props.topHollywoodData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
-    { data: props.hollywoodMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
-    { data: props.topHollywoodMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
-    { data: props.hollywoodSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
-    { data: props.topHollywoodSeasonsData, collectionName: 'Top Web Series', linkPath: '/data/top_web_series' },
-    { data: props.hollywoodAdultData, collectionName: '18+ Contents', linkPath: '/data/18+_contents' },
-    { data: props.topHollywoodAdultData, collectionName: 'Top 18+ Contents', linkPath: '/data/top_18+_contents' },
+    { data: props.topontentData, collectionName: 'Contents', linkPath: '/data/contents' },
+    { data: props.topContentData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
+    { data: props.contentMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
+    { data: props.topContentMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
+    { data: props.contentSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
+    { data: props.topContentSeasonsData, collectionName: 'Top Web Series', linkPath: '/data/top_web_series' },
+    { data: props.contentAdultData, collectionName: '18+ Contents', linkPath: '/data/18+_contents' },
+    { data: props.topContentAdultData, collectionName: 'Top 18+ Contents', linkPath: '/data/top_18+_contents' },
   ];
   
 
@@ -33,14 +33,14 @@ export async function getServerSideProps() {
 
   try {
     const categories = [
-      'hollywood',
-      'top_hollywood',
-      'hollywood_movies',
-      'top_hollywood_movies',
-      'hollywood_seasons',
-      'top_hollywood_seasons',
-      'hollywood_adult',
-      'top_hollywood_adult',
+      'content',
+      'top_content',
+      'content_movies',
+      'top_content_movies',
+      'content_seasons',
+      'top_content_seasons',
+      'content_adult',
+      'top_content_adult',
     ];
 
     const fetchDataPromises = categories.map(async (category) => {
@@ -52,28 +52,28 @@ export async function getServerSideProps() {
 
     return {
       props: {
-        hollywoodData: data[0],
-        topHollywoodData: data[1],
-        hollywoodMoviesData: data[2],
-        topHollywoodMoviesData: data[3],
-        hollywoodSeasonsData: data[4],
-        topHollywoodSeasonsData: data[5],
-        hollywoodAdultData: data[6],
-        topHollywoodAdultData: data[7],
+        contentData: data[0],
+        topContentData: data[1],
+        contentMoviesData: data[2],
+        topContentMoviesData: data[3],
+        contentSeasonsData: data[4],
+        topContentSeasonsData: data[5],
+        contentAdultData: data[6],
+        topContentAdultData: data[7],
       },
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       props: {
-        hollywoodData: { data: [] },
-        topHollywoodData: { data: [] },
-        hollywoodMoviesData: { data: [] },
-        topHollywoodMoviesData: { data: [] },
-        hollywoodSeasonsData: { data: [] },
-        topHollywoodSeasonsData: { data: [] },
-        hollywoodAdultData: { data: [] },
-        topHollywoodAdultData: { data: [] },
+        contentData: { data: [] },
+        topContentData: { data: [] },
+        contentMoviesData: { data: [] },
+        topContentMoviesData: { data: [] },
+        contentSeasonsData: { data: [] },
+        topContentSeasonsData: { data: [] },
+        contentAdultData: { data: [] },
+        topContentAdultData: { data: [] },
       },
     };
   }

@@ -7,18 +7,18 @@ export default async function handler(req, res) {
 
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 12;
-  const category = req.query.category || 'hollywood';
+  const category = req.query.category || 'content';
 
   try {
     const validCategories = [
-      'hollywood',
-      'hollywood_movies',
-      'hollywood_seasons',
-      'hollywood_adult',
-      'top_hollywood',
-      'top_hollywood_movies',
-      'top_hollywood_seasons',
-      'top_hollywood_adult',
+      'contents',
+      'content_movies',
+      'content_seasons',
+      'content_adult',
+      'top_contents',
+      'top_content_movies',
+      'top_content_seasons',
+      'top_content_adult',
     ];
 
     if (!validCategories.includes(category)) {
@@ -29,22 +29,22 @@ export default async function handler(req, res) {
     let response = [];
 
     if (
-      category === 'hollywood_movies' ||
-      category === 'hollywood_seasons' ||
-      category === 'hollywood_adult' ||
-      category === 'hollywood'
+      category === 'content_movies' ||
+      category === 'content_seasons' ||
+      category === 'content_adult' ||
+      category === 'contents'
     ) {
       // Fetch data based on category
       let filterConditions = {};
 
-      if (category === 'hollywood_movies') {
+      if (category === 'content_movies') {
         filterConditions.title = { $not: /season/i };
-      } else if (category === 'hollywood_seasons') {
+      } else if (category === 'content_seasons') {
         filterConditions.title = { $regex: /season/i };
-      } else if (category === 'hollywood_adult') {
+      } else if (category === 'content_adult') {
         filterConditions.title = { $regex: /18\+/i };
-      } else if (category === 'hollywood') {
-        // No specific filter for 'hollywood' category
+      } else if (category === 'contents') {
+        // No specific filter for 'content' category
       }
 
       // Include IMDb rankings where available
@@ -60,24 +60,24 @@ export default async function handler(req, res) {
       });
     }
 
-    // Handle "top_hollywood" categories separately
+    // Handle "top_content" categories separately
     if (
-      category === 'top_hollywood_movies' ||
-      category === 'top_hollywood_seasons' ||
-      category === 'top_hollywood_adult' ||
-      category === 'top_hollywood'
+      category === 'top_content_movies' ||
+      category === 'top_content_seasons' ||
+      category === 'top_content_adult' ||
+      category === 'top_contents'
     ) {
-      // Fetch data for "top_hollywood" categories here
+      // Fetch data for "top_content" categories here
       let topFilterConditions = {};
 
-      if (category === 'top_hollywood_movies') {
+      if (category === 'top_content_movies') {
         topFilterConditions.title = { $not: /season/i };
-      } else if (category === 'top_hollywood_seasons') {
+      } else if (category === 'top_content_seasons') {
         topFilterConditions.title = { $regex: /season/i };
-      } else if (category === 'top_hollywood_adult') {
+      } else if (category === 'top_content_adult') {
         topFilterConditions.title = { $regex: /18\+/i };
-      } else if (category === 'top_hollywood') {
-        // No specific filter for 'top_hollywood' category
+      } else if (category === 'top_contents') {
+        // No specific filter for 'top_content' category
       }
 
       // Include IMDb rankings where available

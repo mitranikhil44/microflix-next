@@ -3,7 +3,7 @@ import ContentList from '../../components/ContentList';
 const Other_Country_Content = ({ initialContents }) => {
   return (
     <div>
-      <ContentList category="hollywood" initialContents={initialContents} />
+      <ContentList category="contents" initialContents={initialContents} />
     </div>
   );
 };
@@ -11,7 +11,7 @@ const Other_Country_Content = ({ initialContents }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const contents = await fetch(`${apiKey}api/blogs/?category=hollywood&page=1`, { timeout: 15000 });
+    const contents = await fetch(`${apiKey}api/blogs/?category=contents&page=1`, { timeout: 15000 });
     let contentsData = await contents.json();
     contentsData = contentsData[0].data || [];
     return {

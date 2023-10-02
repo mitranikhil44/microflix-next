@@ -4,7 +4,7 @@ const Movies = ({ initialContents }) => {
 
   return (
     <div>
-        <ContentList category="top_hollywood_movies" initialContents={initialContents} />
+        <ContentList category="top_content_movies" initialContents={initialContents} />
     </div>
   );
 };
@@ -12,7 +12,7 @@ const Movies = ({ initialContents }) => {
 export async function getServerSideProps() {
   const apiKey = process.env.API_KEY;
   try {
-    const topmovies = await fetch(`${apiKey}api/blogs/?category=top_hollywood_movies&page=1`, { timeout: 15000 });
+    const topmovies = await fetch(`${apiKey}api/blogs/?category=top_content_movies&page=1`, { timeout: 15000 });
     let topMoviesData = await topmovies.json();
     topMoviesData = topMoviesData[0].data || [];
 
