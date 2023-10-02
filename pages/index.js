@@ -3,8 +3,8 @@ import MoviesCollection from '../components/Movie_Collection';
 
 export default function Home(props) {
   const categories = [
-    { data: props.topontentData, collectionName: 'Contents', linkPath: '/data/contents' },
-    { data: props.topContentData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
+    { data: props.topontentsData, collectionName: 'Contents', linkPath: '/data/contents' },
+    { data: props.topContentsData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
     { data: props.contentMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
     { data: props.topContentMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
     { data: props.contentSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
@@ -33,8 +33,8 @@ export async function getServerSideProps() {
 
   try {
     const categories = [
-      'content',
-      'top_content',
+      'contents',
+      'top_contents',
       'content_movies',
       'top_content_movies',
       'content_seasons',
@@ -52,8 +52,8 @@ export async function getServerSideProps() {
 
     return {
       props: {
-        contentData: data[0],
-        topContentData: data[1],
+        contentsData: data[0],
+        topContentsData: data[1],
         contentMoviesData: data[2],
         topContentMoviesData: data[3],
         contentSeasonsData: data[4],
@@ -66,8 +66,8 @@ export async function getServerSideProps() {
     console.error('Error:', error);
     return {
       props: {
-        contentData: { data: [] },
-        topContentData: { data: [] },
+        contentsData: { data: [] },
+        topContentsData: { data: [] },
         contentMoviesData: { data: [] },
         topContentMoviesData: { data: [] },
         contentSeasonsData: { data: [] },
