@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 12;
-  const category = req.query.category || 'content';
+  const category = req.query.category || 'contents';
 
   try {
     const validCategories = [

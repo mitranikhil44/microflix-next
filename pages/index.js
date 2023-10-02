@@ -3,7 +3,7 @@ import MoviesCollection from '../components/Movie_Collection';
 
 export default function Home(props) {
   const categories = [
-    { data: props.topontentsData, collectionName: 'Contents', linkPath: '/data/contents' },
+    { data: props.contentsData, collectionName: 'Contents', linkPath: '/data/contents' },
     { data: props.topContentsData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
     { data: props.contentMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
     { data: props.topContentMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
@@ -13,7 +13,6 @@ export default function Home(props) {
     { data: props.topContentAdultData, collectionName: 'Top 18+ Contents', linkPath: '/data/top_18+_contents' },
   ];
   
-
   return (
     <main>
       {categories.map((category, index) => (
@@ -62,6 +61,7 @@ export async function getServerSideProps() {
         topContentAdultData: data[7],
       },
     };
+
   } catch (error) {
     console.error('Error:', error);
     return {
