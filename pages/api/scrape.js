@@ -34,7 +34,7 @@ const TOTAL_PAGES = 1;
 
       const ratingElements = $(content).find(`div div span[style="font-family: 'Open Sans';"]`).filter(function () {
         const text = $(this).text().trim();
-        return /\/10|\d+\.\d+/i.test(text); // Match patterns like "/10", "3.5", "4.943", "22.433", etc.
+        return /\/10|\d+\.\d+/i.test(text); 
       });      
       
       const imdbRatings = [];
