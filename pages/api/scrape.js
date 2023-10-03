@@ -4,7 +4,7 @@ import connectToDatabase from './database/db';
 import { Contents } from './database/models';
 
 const BASE_URL = 'https://hdhub4u.markets/page/';
-const TOTAL_PAGES = 100;
+const TOTAL_PAGES = 1;
 
 (async () => {
   await connectToDatabase();
@@ -32,10 +32,10 @@ const TOTAL_PAGES = 100;
         }
       });
 
-      const ratingElements = $(content).find('div div div div div div div span').filter(function () {
+      const ratingElements = $(content).find(`div div span[style="font-family: 'Open Sans';"]`).filter(function () {
         const text = $(this).text().trim();
-        return /\/10|\d+\.\d+/i.test(text); 
-      });
+        return /\/10|\d+\.\d+/i.test(text); // Match patterns like "/10", "3.5", "4.943", "22.433", etc.
+      });      
       
       const imdbRatings = [];
       
@@ -46,6 +46,8 @@ const TOTAL_PAGES = 100;
         cleanedRating = cleanedRating.replace(/iMDB Rating:|iMDB Rating:|Rating:/i, '').trim(); // Remove text variations and trim spaces
         imdbRatings.push(cleanedRating);
       });
+
+      console.log(imdbRatings);
 
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
 
@@ -112,8 +114,14 @@ const TOTAL_PAGES = 100;
   async function processPages(startPage = 1) {
     const pageNumbers = Array.from({ length: TOTAL_PAGES }, (_, i) => startPage + i);
   
-    for (const pageNumber of pageNumbers) {
-      await scrapePage(pageNumber);
+    const promises = pageNumbers.map(pageNumber => scrapePage(pageNumber));
+  
+    try {
+      await Promise.all(promises);
+      console.log('Scraping and processing completed.');
+    } catch (error) {
+      console.error('Error:', error.message);
+      console.log('Error occurred during scraping.');
     }
   }
   

@@ -47,7 +47,7 @@ export default async function handler(req, res) {
         // No specific filter for 'content' category
       }
 
-      const query = Contents.find({ ...filterConditions });
+      const query = Contents.find({ ...filterConditions }).sort({updatedAt: 1})
 
       // Apply pagination
       query.skip((page - 1) * pageSize).limit(pageSize);
