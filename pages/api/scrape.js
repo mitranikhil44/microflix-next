@@ -4,14 +4,14 @@ import connectToDatabase from './database/db';
 import { Contents } from './database/models';
 
 const BASE_URL = 'https://hdhub4u.markets/page/';
-const TOTAL_PAGES = 1;
+const TOTAL_PAGES = 791;
 
 (async () => {
   await connectToDatabase();
 
   async function processArticle(article) {
     const { url } = article;
-
+ 
     try {
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
@@ -42,31 +42,29 @@ const TOTAL_PAGES = 1;
       ratingElements.each(function () {
         const ratingSpan = $(this);
         const imdbRating = ratingSpan.text().trim();
-        let cleanedRating = imdbRating.replace(/\/10$/, ''); // Remove "/10" at the end
-        cleanedRating = cleanedRating.replace(/iMDB Rating:|iMDB Rating:|Rating:/i, '').trim(); // Remove text variations and trim spaces
+        let cleanedRating = imdbRating.replace(/\/10$/, ''); 
+        cleanedRating = cleanedRating.replace(/iMDB Rating:|iMDB Rating:|Rating:/i, '').trim(); 
         imdbRatings.push(cleanedRating);
       });
 
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
 
-      // Try to find an existing document by URL
       const existingArticle = await Contents.findOne({ url });
   
       if (existingArticle) {
-        // Update the existing document
         await Contents.findOneAndUpdate(
           { url },
           {
             title: article.title,
             imdb: imdbRatings,
-            slug: article.slug,
+            url,
+            slug: slug,
             image: article.image,
             content: content,
-            updatedAt: Date.now(), // Set updatedAt to the current date and time
+            updatedAt: Date.now(), 
           }
         );
       } else {
-        // Create a new document
         const newArticle = new Contents({
           title: article.title,
           imdb: imdbRatings,
@@ -74,7 +72,7 @@ const TOTAL_PAGES = 1;
           slug: slug,
           image: article.image,
           content: content,
-          updatedAt: Date.now(), // Set updatedAt to the current date and time
+          updatedAt: Date.now(), 
         });
         await newArticle.save();
       }
