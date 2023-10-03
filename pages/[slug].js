@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Image from "next/image";
 
 export default function BlogPost(props) {
@@ -8,6 +9,9 @@ export default function BlogPost(props) {
 
   return (
       <>
+      <Head>
+        <title>{props.myBlog.title}</title>
+      </Head>
         <div className="flex flex-col justify-center items-center py-6 px-4 text-xs xs:text-sm md:text-base contentClass text-gray-700" dangerouslySetInnerHTML={createMarkup(props.myBlog.content)}>
         </div>
       </>

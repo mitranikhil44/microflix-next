@@ -53,8 +53,8 @@ const MoviesCollection = ({ data, linkPath, collectionName }) => {
           <div className={`m-[2%] overflow-hidden`}>
             <div className="relative">
               <Image
-                width={40}
-                height={56}
+                width={144}
+                height={144}
                 src={element.image}
                 alt="Image"
                 className="w-40 h-56 cropped-image hover:scale-110 overflow-hidden rounded-lg"
