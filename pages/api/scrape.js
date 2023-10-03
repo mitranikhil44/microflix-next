@@ -47,8 +47,6 @@ const TOTAL_PAGES = 1;
         imdbRatings.push(cleanedRating);
       });
 
-      console.log(imdbRatings);
-
       const slug = article.title.replace(/[^\w\s]/g, '').replace(/\s+/g, '_').toLowerCase();
 
       // Try to find an existing document by URL
