@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:description"
           content="Microflix is a popular movie downloading website that offers a wide collection of Bollywood, Tollywood, and Hollywood movies available in Hindi." />
         <title>Microflix - 480p, 720p & 1080p Movies Download</title>
-        <script async="async" data-cfasync="false" src="//revelationschemes.com/8a8462267705e39989e95218ff6f6dae/invoke.js"></script>
+        <script async="async" data-cfasync="false" src="//pl17971947.highcpmrevenuegate.com/8a8462267705e39989e95218ff6f6dae/invoke.js"></script>
         <meta name="google-site-verification" content="HzCShkhNsHqze7KztqMUe4veQUNUHyTrDV6_7_2iWwM" />
         <meta name="google-adsense-account" content="ca-pub-4724045884570258"></meta>
       </Head>
