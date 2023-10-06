@@ -61,40 +61,49 @@ export default async function handler(req, res) {
       });
     }
 
-    // Handle "top_content" categories separately
-    if (
-      category === 'top_content_movies' ||
-      category === 'top_content_seasons' ||
-      category === 'top_content_adult' ||
-      category === 'top_contents'
-    ) {
-      // Fetch data for "top_content" categories here
-      let topFilterConditions = {};
+// Handle "top_content" categories separately
+if (
+  category === 'top_content_movies' ||
+  category === 'top_content_seasons' ||
+  category === 'top_content_adult' ||
+  category === 'top_contents'
+) {
+  // Fetch data for "top_content" categories here
+  let topFilterConditions = {};
 
-      if (category === 'top_content_movies') {
-        topFilterConditions.title = { $not: /season/i };
-      } else if (category === 'top_content_seasons') {
-        topFilterConditions.title = { $regex: /season/i };
-      } else if (category === 'top_content_adult') {
-        topFilterConditions.title = { $regex: /18\+/i };
-      } else if (category === 'top_contents') {
-        // No specific filter for 'top_content' category
-      }
+  if (category === 'top_content_movies') {
+    topFilterConditions.title = { $not: /season/i };
+  } else if (category === 'top_content_seasons') {
+    topFilterConditions.title = { $regex: /season/i };
+  } else if (category === 'top_content_adult') {
+    topFilterConditions.title = { $regex: /18\+/i };
+  } else if (category === 'top_contents') {
+    // No specific filter for 'top_content' category
+  }
 
-      // Include IMDb rankings where available
-      const topData = await Contents.find({ ...topFilterConditions, imdb: { $exists: true } })
-        .sort({ imdb: -1 }) // Sort by IMDb rating in descending order
-        .limit(10) // Retrieve only the top 10 rated items
-        .skip((page - 1) * pageSize) // Apply pagination
-        .limit(pageSize)
-        .exec();
+  // Define an aggregation pipeline to filter and sort the data
+  const aggregationPipeline = [
+    {
+      $sort: { imdb: -1 }, // Sort by IMDb rating in descending order
+    },
+    {
+      $skip: (page - 1) * pageSize, // Apply pagination
+    },
+    {
+      $limit: pageSize,
+    },
+  ];
 
-      response.push({
-        data: topData,
-        currentPage: page,
-        pageSize,
-      });
-    }
+  // Use the aggregation pipeline to get the desired data
+  const topData = await Contents.aggregate(aggregationPipeline).exec();
+
+  response.push({
+    data: topData,
+    currentPage: page,
+    pageSize,
+  });
+}
+
 
 
     // Only respond with data if one of the valid categories matched
