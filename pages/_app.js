@@ -29,6 +29,16 @@ function MyApp({ Component, pageProps }) {
         <meta name="google-adsense-account" content="ca-pub-4724045884570258"></meta>
       </Head>
       <Navbar />
+      <div className="xs:hidden">
+        <iframe
+          src={`//www.profitablecreativeformat.com/869ec6d90a576584510453d0b61510ed/invoke.js?key=869ec6d90a576584510453d0b61510ed`}
+          width="300"
+          height="250"
+          frameborder="0"
+          scrolling="no"
+          title="External Content"
+        ></iframe>
+      </div>
       <div className="sm:gridClass">
         <div>
           <div className="mx-auto">
