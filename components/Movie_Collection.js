@@ -1,75 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import LoadingSpinner from "./Loading";
-import Image from "next/image";
 import Link from "next/link";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
+import { Carousel } from "react-responsive-carousel";
+import styles from "./MoviesCollection.module.css";
 
 const MoviesCollection = ({ data, linkPath, collectionName }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const itemWidth = 140; // Assuming each item width is 140px
-  const dataLength = data.length;
-  const [displayedData, setDisplayedData] = useState([]);
-  const itemsPerPage = 20;
-
-  useEffect(() => {
-    if (dataLength > 0) {
-      const scrollInterval = setInterval(() => {
-        setScrollPosition((prevPosition) => {
-          const newPosition = prevPosition + itemWidth;
-          if (newPosition >= dataLength * itemWidth) {
-            // Reached the end, reset to the beginning
-            return 0;
-          }
-          return newPosition;
-        });
-      }, 2000);
-
-      return () => clearInterval(scrollInterval);
-    }
-  }, [dataLength]);
-
-  useEffect(() => {
-    // Load and display initial data
-    loadMoreData();
-  }, []);
 
   const showLoading = () => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
     }, 5000);
-  };
-
-  const loadMoreData = () => {
-    // Calculate the range of items to load
-    const startIndex = Math.max(0, displayedData.length - itemsPerPage);
-    const endIndex = displayedData.length + itemsPerPage;
-
-    // Slice the new data to be displayed
-    const newData = data.slice(startIndex, endIndex).map((element) => {
-      const imdbRating = parseFloat(element.imdb?.[0]?.match(/[\d.]+/) || '0');
-      return (
-        <Link key={element.slug} href={`/${element.slug}`} onClick={showLoading}>
-          <div className={`m-[2%] overflow-hidden`}>
-            <div className="relative">
-              <Image
-                width={144}
-                height={144}
-                src={element.image}
-                alt="Image"
-                className="w-40 h-56 cropped-image hover:scale-110 overflow-hidden rounded-lg"
-              />
-              <p className={`IMDB rounded-tl-lg absolute top-0 left-0 overflow-hidden p-[1%] text-white ${imdbRating >= 9 ? 'bg-green-700' : imdbRating >= 8 ? "bg-green-600": imdbRating >= 7 ? "bg-green-500": imdbRating >= 6.5 ? "bg-yellow-700": imdbRating >= 6 ? "bg-yellow-600": imdbRating >= 5.5 ? "bg-yellow-500": imdbRating >= 5 ? "bg-red-500": imdbRating >= 4.5 ? "bg-red-600": "bg-red-700"}`}>
-                {imdbRating.toFixed(1)}
-              </p>
-            </div>
-          </div>
-        </Link>
-      );
-    });
-
-    // Update the displayed data with the new data
-    setDisplayedData((prevData) => [...prevData, ...newData]);
   };
 
   return (
@@ -98,17 +41,27 @@ const MoviesCollection = ({ data, linkPath, collectionName }) => {
         </div>
       </Link>
       <hr className="p-[1%]" />
-      <div className="overflow-x-scroll overflow-y-hidden h-60 relative">
-        <div
-          className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
-          style={{
-            width: `${dataLength * itemWidth * 4}px`,
-            left: `-${scrollPosition}px`,
-            transition: "left 1s linear",
-          }}
-        >
-          {displayedData}
-        </div>
+      <div className={styles.carouselContainer}>
+        <Carousel>
+          {data.map((element) => (
+            <Link key={element.slug} href={`/${element.slug}`} onClick={showLoading}>
+              <div className={`${styles.movieCard}`}>
+                <div className={styles.movieImage}>
+                  <img
+                    width={144}
+                    height={144}
+                    src={element.image}
+                    alt="Image"
+                    className="w-40 h-56 cropped-image rounded-lg"
+                  />
+                </div>
+                <div className={`${styles.imdbRating} ${getRatingColor(element.imdb[0])}`}>
+                  {parseFloat(element.imdb[0].match(/[\d.]+/)[0]).toFixed(1)}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </Carousel>
       </div>
     </div>
   );
