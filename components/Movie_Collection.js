@@ -5,33 +5,18 @@ import Link from "next/link";
 
 const MoviesCollection = ({ data, linkPath, collectionName }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const itemWidth = 140; 
-  const dataLength = data.length;
-  const [displayedData, setDisplayedData] = useState([]);
-  const itemsPerPage = 20;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemWidth = 180; // Adjust as needed
 
   useEffect(() => {
-    if (dataLength > 0) {
-      const scrollInterval = setInterval(() => {
-        setScrollPosition((prevPosition) => {
-          const newPosition = prevPosition + itemWidth;
-          if (newPosition >= dataLength * itemWidth) {
-            // Reached the end, reset to the beginning
-            return 0;
-          }
-          return newPosition;
-        });
-      }, 2000);
+    const scrollInterval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        (prevIndex + 1) % data.length
+      );
+    }, 3000); // Adjust the interval time
 
-      return () => clearInterval(scrollInterval);
-    }
-  }, [dataLength]);
-
-  useEffect(() => {
-    // Load and display initial data
-    loadMoreData();
-  }, []);
+    return () => clearInterval(scrollInterval);
+  }, [data]);
 
   const showLoading = () => {
     setIsLoading(true);
@@ -40,36 +25,47 @@ const MoviesCollection = ({ data, linkPath, collectionName }) => {
     }, 5000);
   };
 
-  const loadMoreData = () => {
-    // Calculate the range of items to load
-    const startIndex = Math.max(0, displayedData.length - itemsPerPage);
-    const endIndex = displayedData.length + itemsPerPage;
-
-    // Slice the new data to be displayed
-    const newData = data.slice(startIndex, endIndex).map((element) => {
-      const imdbRating = parseFloat(element.imdb?.[0]?.match(/[\d.]+/) || '0');
-      return (
-        <Link key={element.slug} href={`/${element.slug}`} onClick={showLoading}>
-          <div className={`m-[2%] overflow-hidden`}>
-            <div className="relative">
-              <Image
-                width={144}
-                height={144}
-                src={element.image}
-                alt="Image"
-                className="w-40 h-56 cropped-image hover:scale-110 overflow-hidden rounded-lg"
-              />
-              <p className={`IMDB rounded-tl-lg absolute top-0 left-0 overflow-hidden p-[1%] text-white ${imdbRating >= 9 ? 'bg-green-700' : imdbRating >= 8 ? "bg-green-600": imdbRating >= 7 ? "bg-green-500": imdbRating >= 6.5 ? "bg-yellow-700": imdbRating >= 6 ? "bg-yellow-600": imdbRating >= 5.5 ? "bg-yellow-500": imdbRating >= 5 ? "bg-red-500": imdbRating >= 4.5 ? "bg-red-600": "bg-red-700"}`}>
-                {imdbRating.toFixed(1)}
-              </p>
-            </div>
+  const renderMovieCards = () => {
+    return data.map((element, index) => (
+      <Link key={element.slug} href={`/${element.slug}`} onClick={showLoading}>
+        <div
+          className={`border rounded-lg p-2 hover:shadow-md ${
+            index === currentIndex ? "border-green-500" : "border-gray-300"
+          }`}
+        >
+          <div className="relative">
+            <Image
+              width={144}
+              height={144}
+              src={element.image}
+              alt="Image"
+              className="w-40 h-56 cropped-image rounded-lg"
+            />
+            <p
+              className={`IMDB rounded-tl-lg absolute top-0 left-0 p-1 text-white ${
+                getRatingColor(element.imdb[0])
+              }`}
+            >
+              {parseFloat(element.imdb[0].match(/[\d.]+/)[0]).toFixed(1)}
+            </p>
           </div>
-        </Link>
-      );
-    });
+        </div>
+      </Link>
+    ));
+  };
 
-    // Update the displayed data with the new data
-    setDisplayedData((prevData) => [...prevData, ...newData]);
+  const getRatingColor = (rating) => {
+    // Implement your logic for rating-based colors here
+    const imdbRating = parseFloat(rating.match(/[\d.]+/)[0]);
+    if (imdbRating >= 9) {
+      return "bg-green-700";
+    } else if (imdbRating >= 8) {
+      return "bg-green-600";
+    } else if (imdbRating >= 7) {
+      return "bg-green-500";
+    } else {
+      return "bg-red-500";
+    }
   };
 
   return (
@@ -97,17 +93,17 @@ const MoviesCollection = ({ data, linkPath, collectionName }) => {
           </div>
         </div>
       </Link>
-      <hr className="p-[1%]" />
-      <div className="overflow-x-scroll overflow-y-hidden h-60 relative">
+      <hr className="p-1" />
+      <div className="overflow-x-auto overflow-y-hidden h-60 relative">
         <div
           className="flex absolute scrollbar-thumb-rounded-md scrollbar-track-rounded-md scrollbar-thin scrollbar-thumb-[#7d5c20] scrollbar-track-gray-100"
           style={{
-            width: `${dataLength * itemWidth * 4}px`,
-            left: `-${scrollPosition}px`,
+            width: `${data.length * itemWidth * 4}px`,
+            left: `-${currentIndex * itemWidth}px`,
             transition: "left 1s linear",
           }}
         >
-          {displayedData}
+          {renderMovieCards()}
         </div>
       </div>
     </div>
