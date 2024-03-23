@@ -1,32 +1,25 @@
+import PaginationButton from '../../components/other/PaginationButton';
+import FetchSSRData from '../../components/other/FetchSSRData';
 import ContentList from '../../components/ContentList';
 
-const Movies = ({ initialContents }) => {
-
+const Movies = ({ contents, page, totalPages }) => {
   return (
     <div>
-        <ContentList category="content_movies" initialContents={initialContents} />
+      <ContentList contents={contents} />
+      <PaginationButton totalPages={totalPages} page={page} category={"content_movies"}/>
     </div>
   );
 };
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY;
+  const page = 1; 
   try {
-    const movies = await fetch(`${apiKey}api/blogs/?category=content_movies&page=1`, { timeout: 15000 });
-    let moviesData = await movies.json();
-    moviesData = moviesData[0].data || [];
-
-    return {
-      props: {
-        initialContents: moviesData,
-      },
-    };
+    const contents = await FetchSSRData(page, "content_movies");
+    const totalPages = contents[0].totalPages;
+    return { props: { contents, page, totalPages } }; 
   } catch (error) {
-    return {
-      props: {
-        initialContents: [], // Provide a default empty array if there's an error
-      },
-    };
+    console.error("Error fetching data:", error);
+    return { props: { contents: [], page: 1 } }; 
   }
 }
 

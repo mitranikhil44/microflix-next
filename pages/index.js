@@ -1,80 +1,68 @@
-import React from 'react';
+import FetchSSRData from '../components/other/FetchSSRData';
 import MoviesCollection from '../components/Movie_Collection';
+import LatestContents from '../components/LatestContents';
+import Head from 'next/head';
 
-export default function Home(props) {
-  const categories = [
-    { data: props.contentsData, collectionName: 'Contents', linkPath: '/data/contents' },
-    { data: props.topContentsData, collectionName: 'Top Contents', linkPath: '/data/top_contents' },
-    { data: props.contentMoviesData, collectionName: 'Movies', linkPath: '/data/movies' },
-    { data: props.topContentMoviesData, collectionName: 'Top Movies', linkPath: '/data/top_movies' },
-    { data: props.contentSeasonsData, collectionName: 'Web Series', linkPath: '/data/web_series' },
-    { data: props.topContentSeasonsData, collectionName: 'Top Web Series', linkPath: '/data/top_web_series' },
-    { data: props.contentAdultData, collectionName: '18+ Contents', linkPath: '/data/18+_contents' },
-    { data: props.topContentAdultData, collectionName: 'Top 18+ Contents', linkPath: '/data/top_18+_contents' },
-  ];
-  
+export default function Home({
+  contentsData,
+  latestContentsData,
+  moviesContentData,
+  webSeriesContentData,
+  adultContentsData
+}) {
   return (
-    <main>
-      {categories.map((category, index) => (
+    <>
+      <Head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-80H6K0RCMY"></script>
+        <script>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-80H6K0RCMY');
+          `}
+        </script>
+      </Head>
+      <section>
+        <LatestContents data={latestContentsData[0].data} />
+      </section>
+      <section>
         <MoviesCollection
-          key={index + 1}
-          data={category.data[0].data}
-          collectionName={category.collectionName}
-          linkPath={category.linkPath}
+          data={contentsData[0].data}
+          collectionName="Contents"
         />
-      ))}
-    </main>
+        <MoviesCollection
+          data={moviesContentData[0].data}
+          collectionName="Movies Contents"
+        />
+        <MoviesCollection
+          data={webSeriesContentData[0].data}
+          collectionName="Web Series Content"
+        />
+        <MoviesCollection
+          data={adultContentsData[0].data}
+          collectionName="Adult Content"
+        />
+      </section>
+    </>
   );
 }
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY || 'https://microflix.vercel.app/';
+  const page = 1; // Or whatever page you want to fetch
+  const contentsData = await FetchSSRData(page, "contents");
+  const latestContentsData = await FetchSSRData(page, "latest_contents");
+  const moviesContentData = await FetchSSRData(page, "content_movies");
+  const webSeriesContentData = await FetchSSRData(page, "content_seasons");
+  const adultContentsData = await FetchSSRData(page, "content_adult");
 
-  try {
-    const categories = [
-      'contents',
-      'top_contents',
-      'content_movies',
-      'top_content_movies',
-      'content_seasons',
-      'top_content_seasons',
-      'content_adult',
-      'top_content_adult',
-    ];
-
-    const fetchDataPromises = categories.map(async (category) => {
-      const response = await fetch(`${apiKey}api/blogs/?category=${category}&page=1`);
-      return response.json();
-    });
-
-    const data = await Promise.all(fetchDataPromises);
-
-    return {
-      props: {
-        contentsData: data[0],
-        topContentsData: data[1],
-        contentMoviesData: data[2],
-        topContentMoviesData: data[3],
-        contentSeasonsData: data[4],
-        topContentSeasonsData: data[5],
-        contentAdultData: data[6],
-        topContentAdultData: data[7],
-      },
-    };
-
-  } catch (error) {
-    console.error('Error:', error);
-    return {
-      props: {
-        contentsData: { data: [] },
-        topContentsData: { data: [] },
-        contentMoviesData: { data: [] },
-        topContentMoviesData: { data: [] },
-        contentSeasonsData: { data: [] },
-        topContentSeasonsData: { data: [] },
-        contentAdultData: { data: [] },
-        topContentAdultData: { data: [] },
-      },
-    };
-  }
+  return {
+    props: {
+      contentsData,
+      latestContentsData,
+      moviesContentData,
+      webSeriesContentData,
+      adultContentsData
+    }
+  };
 }

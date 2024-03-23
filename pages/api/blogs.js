@@ -1,15 +1,13 @@
 import mongoose from 'mongoose';
-import connectToDatabase from './database/db';
-import { Contents } from './database/scrapeSchema';
+import connectToDatabase from '../../lib/mongodb';
+import { Contents } from '../../models/scrapeSchema';
 
 export default async function handler(req, res) {
+  if (req.method === 'POST') {
   await connectToDatabase();
-
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 12;
-  const category = req.query.category || 'contents';
-
-  try {
+  const category = req.query.category || 'contents'; try {
     const validCategories = [
       'contents',
       'content_movies',
@@ -19,14 +17,29 @@ export default async function handler(req, res) {
       'top_content_movies',
       'top_content_seasons',
       'top_content_adult',
+      'latest_contents',
     ];
 
     if (!validCategories.includes(category)) {
       res.status(400).json({ error: 'Invalid category' });
       return;
     }
-
     let response = [];
+
+    if (category === 'latest_contents') {
+      const sortedData = await Contents.find()
+        .sort({ "imdbDetails.formattedDateObject": -1 })
+        .skip((page - 1) * pageSize)
+        .limit(pageSize);
+      const totalPages = Math.ceil(await Contents.countDocuments({}) / pageSize);
+
+      response.push({
+        data: sortedData,
+        currentPage: page,
+        pageSize,
+        totalPages,
+      });
+    }
 
     if (
       category === 'content_movies' ||
@@ -47,63 +60,66 @@ export default async function handler(req, res) {
         // No specific filter for 'content' category
       }
 
-      const query = Contents.find({ ...filterConditions }).sort({updatedAt: 1})
+      const query = Contents.find({ ...filterConditions }).sort({ updatedAt: 1 })
 
       // Apply pagination
       query.skip((page - 1) * pageSize).limit(pageSize);
-
+      const totalCount = await Contents.countDocuments(filterConditions);
+      const totalPages = Math.ceil(totalCount / pageSize);
       const data = await query.exec();
 
       response.push({
         data,
         currentPage: page,
         pageSize,
+        totalPages,
       });
     }
 
-// Handle "top_content" categories separately
-if (
-  category === 'top_content_movies' ||
-  category === 'top_content_seasons' ||
-  category === 'top_content_adult' ||
-  category === 'top_contents'
-) {
-  // Fetch data for "top_content" categories here
-  let topFilterConditions = {};
+    // Handle "top_content" categories separately
+    if (
+      category === 'top_content_movies' ||
+      category === 'top_content_seasons' ||
+      category === 'top_content_adult' ||
+      category === 'top_contents'
+    ) {
 
-  if (category === 'top_content_movies') {
-    topFilterConditions.title = { $not: /season/i };
-  } else if (category === 'top_content_seasons') {
-    topFilterConditions.title = { $regex: /season/i };
-  } else if (category === 'top_content_adult') {
-    topFilterConditions.title = { $regex: /18\+/i };
-  } else if (category === 'top_contents') {
-    // No specific filter for 'top_content' category
-  }
+      let topFilterConditions = {};
 
-  // Define an aggregation pipeline to filter and sort the data
-  const aggregationPipeline = [
-    {
-      $sort: { imdb: -1 }, // Sort by IMDb rating in descending order
-    },
-    {
-      $skip: (page - 1) * pageSize, // Apply pagination
-    },
-    {
-      $limit: pageSize,
-    },
-  ];
+      if (category === 'top_content_movies') {
+        topFilterConditions.title = { $not: /season/i };
+      } else if (category === 'top_content_seasons') {
+        topFilterConditions.title = { $regex: /season/i };
+      } else if (category === 'top_content_adult') {
+        topFilterConditions.title = { $regex: /18\+/i };
+      }
 
-  // Use the aggregation pipeline to get the desired data
-  const topData = await Contents.aggregate(aggregationPipeline).exec();
+      const aggregationPipeline = [
+        {
+          $match: topFilterConditions,
+        },
+        {
+          $sort: { "imdbDetails.imdbRating.rating": -1 },
+        },
+        {
+          $skip: (page - 1) * pageSize,
+        },
+        {
+          $limit: pageSize,
+        },
+      ];
 
-  response.push({
-    data: topData,
-    currentPage: page,
-    pageSize,
-  });
-}
+      const topData = await Contents.aggregate(aggregationPipeline).exec();
+      const totalCount = await Contents.countDocuments(topFilterConditions);
+      const totalPages = Math.ceil(totalCount / pageSize);
 
+      response.push({
+        data: topData,
+        currentPage: page,
+        pageSize,
+        totalPages,
+      });
+    }
 
 
     // Only respond with data if one of the valid categories matched
@@ -117,5 +133,6 @@ if (
     res.status(500).json({ error: 'Error while fetching data' });
   } finally {
     mongoose.connection.close();
+  }
   }
 }

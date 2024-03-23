@@ -1,29 +1,26 @@
+import PaginationButton from '../../components/other/PaginationButton';
+import FetchSSRData from '../../components/other/FetchSSRData';
 import ContentList from '../../components/ContentList';
 
-const Other_Country_Content = ({ initialContents }) => {
+const TopContents = ({ contents, page, totalPages }) => {
   return (
     <div>
-      <ContentList category="top_contents" initialContents={initialContents} />
+      <ContentList contents={contents} />
+      <PaginationButton totalPages={totalPages} page={page} category={"top_contents"}/>
     </div>
   );
 };
 
 export async function getServerSideProps() {
-  const apiKey = process.env.API_KEY;
+  const page = 1; 
   try {
-    const topContents = await fetch(`${apiKey}api/blogs/?category=top_contents&page=1`, { timeout: 15000 });
-    let topContentsData = await topContents.json();
-    topContentsData = topContentsData[0].data || [];
-    return {
-      props: { initialContents: topContentsData },
-    };
+    const contents = await FetchSSRData(page, "top_contents");
+    const totalPages = contents[0].totalPages;
+    return { props: { contents, page, totalPages } }; 
   } catch (error) {
-    return {
-      props: {
-        initialContents: { files: [], count: 0, total: 0 },
-      },
-    };
+    console.error("Error fetching data:", error);
+    return { props: { contents: [], page: 1 } }; 
   }
 }
 
-export default Other_Country_Content;
+export default TopContents;

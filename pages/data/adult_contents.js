@@ -2,11 +2,11 @@ import PaginationButton from '../../components/other/PaginationButton';
 import FetchSSRData from '../../components/other/FetchSSRData';
 import ContentList from '../../components/ContentList';
 
-const contents = ({ contents, page, totalPages }) => {
+const AdultContent = ({ contents, page, totalPages }) => {
   return (
     <div>
       <ContentList contents={contents} />
-      <PaginationButton totalPages={totalPages} page={page} category={"contents"}/>
+      <PaginationButton totalPages={totalPages} page={page} category={"content_adult"}/>
     </div>
   );
 };
@@ -14,7 +14,7 @@ const contents = ({ contents, page, totalPages }) => {
 export async function getServerSideProps() {
   const page = 1; 
   try {
-    const contents = await FetchSSRData(page, "contents");
+    const contents = await FetchSSRData(page, "content_adult");
     const totalPages = contents[0].totalPages;
     return { props: { contents, page, totalPages } }; 
   } catch (error) {
@@ -23,4 +23,4 @@ export async function getServerSideProps() {
   }
 }
 
-export default contents;
+export default AdultContent;

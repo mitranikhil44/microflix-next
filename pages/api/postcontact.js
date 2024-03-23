@@ -1,25 +1,26 @@
-// postContact.js
-import connectToDatabase from './database/db';
-import { Contact } from './database/contactSchema';
+import connectToDatabase from '../../lib/mongodb';
+import { Contact } from '../../models/contactSchema';
 
 export default async function handler(req, res) {
-    try {
-        await connectToDatabase();
-
-        if (req.method === 'POST') {
+    if (req.method === 'POST') {
+        try {
+            await connectToDatabase();
+            const { name, email, contact, message } = req.body; 
             const newContact = new Contact({
-                name: req.body.name,
-                email: req.body.email,
-                message: req.body.message,
+                name: name,
+                email: email,
+                contact: contact,
+                message: message,
             });
 
             await newContact.save();
-            res.status(200).json({ Success: 'Thank You' });
-        } else {
-            res.status(400).json({ Error: 'Invalid Request Method' });
+            res.status(200).json({ success: 'Thank you' }); 
+
+        } catch (error) {
+            console.error('Error:', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).json({ Error: 'Internal Server Error' });
+    } else {
+        res.status(405).json({ error: 'Method Not Allowed' }); 
     }
 }
