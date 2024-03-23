@@ -13,7 +13,7 @@ export default function Home({
   return (
     <>
       <Head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-80H6K0RCMY"></script>
+        {/* <script async src="https://www.googletagmanager.com/gtag/js?id=G-80H6K0RCMY"></script>
         <script>
           {`
             window.dataLayer = window.dataLayer || [];
@@ -21,7 +21,7 @@ export default function Home({
             gtag('js', new Date());
             gtag('config', 'G-80H6K0RCMY');
           `}
-        </script>
+        </script> */}
       </Head>
       <section>
         <LatestContents data={latestContentsData[0].data} />
