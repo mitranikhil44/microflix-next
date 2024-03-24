@@ -1,8 +1,9 @@
-import { ContextProvider } from "../context/WebStore";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/globals.css";
 import Head from "next/head";
+import Script from "next/script";
+import { ContextProvider } from "../context/WebStore";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -104,10 +105,10 @@ function MyApp({ Component, pageProps }) {
           />
 
           {/* Ads Script */}
-          <script
+          <Script
             async
             src="//pl17971947.highcpmrevenuegate.com/8a8462267705e39989e95218ff6f6dae/invoke.js"
-          ></script>
+          />
         </Head>
         <Navbar />
         <div className="sm:gridClass">

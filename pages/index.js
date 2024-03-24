@@ -1,28 +1,38 @@
-import FetchSSRData from '../components/other/FetchSSRData';
-import MoviesCollection from '../components/Movie_Collection';
-import LatestContents from '../components/LatestContents';
-import Head from 'next/head';
+import FetchSSRData from "../components/other/FetchSSRData";
+import MoviesCollection from "../components/Movie_Collection";
+import LatestContents from "../components/LatestContents";
+import Script from "next/script";
+import { useWebStore } from "../context/WebStore";
+import { useEffect } from "react";
 
 export default function Home({
   contentsData,
   latestContentsData,
   moviesContentData,
   webSeriesContentData,
-  adultContentsData
+  adultContentsData,
 }) {
+  const { setProgress } = useWebStore();
+
+  useEffect(() => {
+    setProgress(100);
+  }, []);
+
   return (
     <>
-      <Head>
-        {/* <script async src="https://www.googletagmanager.com/gtag/js?id=G-80H6K0RCMY"></script>
-        <script>
-          {`
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-80H6K0RCMY"
+        strategy="afterInteractive"
+      />
+      <Script>
+        {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-80H6K0RCMY');
           `}
-        </script> */}
-      </Head>
+      </Script>
       <section>
         <LatestContents data={latestContentsData[0].data} />
       </section>
@@ -49,7 +59,8 @@ export default function Home({
 }
 
 export async function getServerSideProps() {
-  const page = 1; // Or whatever page you want to fetch
+  const page = 1;
+
   const contentsData = await FetchSSRData(page, "contents");
   const latestContentsData = await FetchSSRData(page, "latest_contents");
   const moviesContentData = await FetchSSRData(page, "content_movies");
@@ -62,7 +73,7 @@ export async function getServerSideProps() {
       latestContentsData,
       moviesContentData,
       webSeriesContentData,
-      adultContentsData
-    }
+      adultContentsData,
+    },
   };
 }

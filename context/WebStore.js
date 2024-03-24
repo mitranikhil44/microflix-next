@@ -1,23 +1,31 @@
-"use client"
-
 import { createContext, useState, useContext } from 'react';
+import LoadingBar from "react-top-loading-bar";
 
-const Context = createContext();
+const context = createContext();
 
-export function useYourContext() {
-  return useContext(Context);
+export function useWebStore() {
+  return useContext(context);
 }
 
-export function ContextProvider({ children }) {
-  const [showLoadingBar, setShowLoadingBar] = useState(false);
+function ContextProvider({ children }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [progress, setProgress] = useState(0);
 
   const yourFunction = () => {
     
   };
 
   return (
-    <Context.Provider value={{ showLoadingBar, setShowLoadingBar }}>
+    <context.Provider value={{ progress, setProgress, isLoading, setIsLoading }}>     
+    {isLoading && <LoadingSpinner />}     
+    <LoadingBar
+      color="rgba(199, 148, 59, 0.8)"
+      progress={progress}
+      onLoaderFinished={() => setProgress(0)}
+    />
       {children}
-    </Context.Provider>
+    </context.Provider>
   );
 }
+
+export { context, ContextProvider };

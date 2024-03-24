@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { HiUser, HiMail, HiPhone, HiChatAlt } from 'react-icons/hi';
+import React, { useState, useEffect } from "react";
+import { HiUser, HiMail, HiPhone, HiChatAlt } from "react-icons/hi";
+import { useWebStore } from "../context/WebStore";
 
 function Contact() {
+  const { progress, setProgress } = useWebStore();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,7 +48,12 @@ function Contact() {
     });
   };
 
+  useEffect(() => {
+    setProgress(100);
+  }, []);
+
   return (
+    <>
     <form
       onSubmit={handleSubmit}
       className="flex items-center justify-center my-12"
@@ -101,7 +108,8 @@ function Contact() {
             htmlFor="contact"
             className="block text-sm font-semibold text-gray-700"
           >
-            Contact No. <span className="text-sm text-gray-700">(optional)</span>
+            Contact No.{" "}
+            <span className="text-sm text-gray-700">(optional)</span>
           </label>
           <input
             id="contact"
@@ -143,6 +151,7 @@ function Contact() {
         </div>
       </div>
     </form>
+    </>
   );
 }
 
