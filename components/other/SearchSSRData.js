@@ -5,8 +5,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json' 
-        },
-        cache: 'reload'
+        }
       });
       const contents = await response.json();
       return contents;

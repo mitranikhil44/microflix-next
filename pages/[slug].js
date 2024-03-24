@@ -55,7 +55,7 @@ export async function getServerSideProps(context) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }, timeout: 15000
+      }, timeout: 15000,
     });
     const myBlog = await data.json();
     return {
